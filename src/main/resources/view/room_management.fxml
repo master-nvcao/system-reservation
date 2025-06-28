@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.my.project.controller.RoomManagementController"
+            stylesheets="@/style/styles.css"
+            prefWidth="850" prefHeight="520">
+
+    <top>
+        <VBox spacing="8" styleClass="padded-vbox">
+            <Label text="Gestion des Salles" styleClass="header-label"/>
+        </VBox>
+    </top>
+
+    <center>
+        <TableView fx:id="salleTable" prefHeight="400" styleClass="table-view">
+            <columns>
+                <TableColumn fx:id="idCol" text="ID" prefWidth="50"/>
+                <TableColumn fx:id="nomCol" text="Nom" prefWidth="150"/>
+                <TableColumn fx:id="capaciteCol" text="Capacité" prefWidth="100"/>
+                <TableColumn fx:id="typeCol" text="Type" prefWidth="100"/>
+                <TableColumn fx:id="dispoCol" text="Disponible" prefWidth="100"/>
+                <TableColumn fx:id="equipementCol" text="Équipements" prefWidth="300"/>
+            </columns>
+        </TableView>
+    </center>
+
+    <bottom>
+        <HBox spacing="12" alignment="CENTER" styleClass="padded-vbox">
+            <Button text="Ajouter" onAction="#handleAdd" styleClass="primary-button"/>
+            <Button text="Modifier" onAction="#handleEdit" styleClass="secondary-button"/>
+            <Button text="Supprimer" onAction="#handleDelete" styleClass="danger-button"/>
+            <Button text="(Dés)activer" onAction="#handleToggleDisponibilite" styleClass="secondary-button"/>
+            <Button text="Associer équipements" onAction="#handleAssocierEquipements" styleClass="primary-button"/>
+            <Button text="Fermer" onAction="#handleClose" styleClass="secondary-button"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

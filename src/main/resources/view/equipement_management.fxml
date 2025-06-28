@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.my.project.controller.EquipementManagementController"
+            stylesheets="@/style/styles.css"
+            prefWidth="1000" prefHeight="600"
+            styleClass="dashboard-root">
+
+    <top>
+        <VBox spacing="10" alignment="CENTER" styleClass="padded-vbox">
+            <Label text="Gérer les Équipements" styleClass="header-label"/>
+        </VBox>
+    </top>
+
+    <center>
+        <TableView fx:id="equipementTable" prefHeight="450" styleClass="table-view">
+            <columns>
+                <TableColumn fx:id="idCol" text="ID" prefWidth="60"/>
+                <TableColumn fx:id="nomCol" text="Nom" prefWidth="180"/>
+                <TableColumn fx:id="descCol" text="Description" prefWidth="280"/>
+                <TableColumn fx:id="typeCol" text="Type" prefWidth="150"/>
+                <TableColumn fx:id="sallesCol" text="Salles associées" prefWidth="300"/>
+            </columns>
+        </TableView>
+    </center>
+
+    <bottom>
+        <HBox spacing="15" alignment="CENTER" styleClass="padded-vbox">
+            <Button text="Ajouter" onAction="#handleAdd" styleClass="primary-button"/>
+            <Button text="Modifier" onAction="#handleEdit" styleClass="primary-button"/>
+            <Button text="Supprimer" onAction="#handleDelete" styleClass="danger-button"/>
+            <Button text="Associer à salles" onAction="#handleAssocierSalles" styleClass="secondary-button"/>
+            <Button text="Fermer" onAction="#handleClose" styleClass="secondary-button"/>
+        </HBox>
+    </bottom>
+</BorderPane>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.my.project.controller.LoginController"
+            stylesheets="@/style/styles.css"
+            prefWidth="420" prefHeight="360"
+            styleClass="login-root">
+
+    <children>
+        <VBox spacing="15" alignment="CENTER" layoutX="40" layoutY="30" prefWidth="340">
+            <Label text="Connexion" styleClass="header-label"/>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Email :" prefWidth="90"/>
+                <TextField fx:id="emailField" prefWidth="220"/>
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Mot de passe :" prefWidth="90"/>
+                <PasswordField fx:id="passwordField" prefWidth="220"/>
+            </HBox>
+
+            <Label fx:id="messageLabel" wrapText="true" styleClass="error-label" prefWidth="320"/>
+
+            <Button text="Se connecter" prefWidth="220" onAction="#handleLogin" styleClass="primary-button"/>
+            <Button text="Créer un compte" prefWidth="220" onAction="#handleShowRegister" styleClass="secondary-button"/>
+        </VBox>
+    </children>
+</AnchorPane>

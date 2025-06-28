@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.DatePicker?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.my.project.controller.ReservationController"
+            stylesheets="@/style/styles.css"
+            prefWidth="520" prefHeight="440">
+
+    <children>
+        <VBox layoutX="50" layoutY="20" spacing="12" styleClass="padded-vbox" prefWidth="420">
+
+            <Label text="Nouvelle Réservation" styleClass="header-label"/>
+
+            <HBox spacing="10">
+                <Label text="Salle :" prefWidth="100"/>
+                <ComboBox fx:id="salleComboBox" prefWidth="280"/>
+            </HBox>
+
+            <HBox spacing="10">
+                <Label text="Date :" prefWidth="100"/>
+                <DatePicker fx:id="datePicker" prefWidth="280"/>
+            </HBox>
+
+            <HBox spacing="10">
+                <Label text="Heure début :" prefWidth="100"/>
+                <TextField fx:id="heureDebutField" promptText="ex: 10:00" prefWidth="280"/>
+            </HBox>
+
+            <HBox spacing="10">
+                <Label text="Heure fin :" prefWidth="100"/>
+                <TextField fx:id="heureFinField" promptText="ex: 12:00" prefWidth="280"/>
+            </HBox>
+
+            <HBox spacing="10" alignment="TOP_LEFT">
+                <Label text="Description :" prefWidth="100"/>
+                <TextArea fx:id="descriptionArea" prefWidth="280" prefHeight="60"/>
+            </HBox>
+
+            <Button text="Réserver" onAction="#handleReservation" styleClass="primary-button" prefWidth="200" alignment="CENTER"/>
+            <Label fx:id="messageLabel" textFill="red" wrapText="true" styleClass="error-label" prefWidth="350" alignment="CENTER"/>
+        </VBox>
+    </children>
+</AnchorPane>

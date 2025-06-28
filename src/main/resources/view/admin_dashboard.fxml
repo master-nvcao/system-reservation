@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.my.project.controller.AdminDashboardController"
+            stylesheets="@/style/styles.css"
+            prefWidth="600" prefHeight="500"
+            styleClass="dashboard-root">
+
+    <children>
+        <VBox alignment="TOP_CENTER" spacing="20" prefWidth="400" layoutX="100" layoutY="40">
+            <Label fx:id="adminWelcomeLabel" text="Bienvenue, Admin"
+                   styleClass="dashboard-title"/>
+
+            <Button text="Gérer les utilisateurs"
+                    onAction="#handleUserManagement"
+                    prefWidth="300" styleClass="dashboard-button blue-button"/>
+
+            <Button text="Gérer les salles"
+                    onAction="#handleRoomManagement"
+                    prefWidth="300" styleClass="dashboard-button blue-button"/>
+
+            <Button text="Gérer les équipements"
+                    onAction="#handleEquipementManagement"
+                    prefWidth="300" styleClass="dashboard-button blue-button"/>
+
+            <Button text="Voir toutes les réservations"
+                    onAction="#handleAllReservations"
+                    prefWidth="300" styleClass="dashboard-button blue-button"/>
+
+            <Button text="Déconnexion"
+                    onAction="#handleLogout"
+                    prefWidth="300" styleClass="dashboard-button red-button"/>
+        </VBox>
+    </children>
+</AnchorPane>

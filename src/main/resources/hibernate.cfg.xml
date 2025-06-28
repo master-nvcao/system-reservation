@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+
+        <!-- Connexion à MySQL -->
+        <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://localhost:3306/reservation_universite?useSSL=false&amp;serverTimezone=UTC</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password"></property>
+
+        <!-- Dialecte -->
+        <property name="dialect">org.hibernate.dialect.MySQL8Dialect</property>
+
+        <!-- Options -->
+        <property name="show_sql">true</property>
+        <property name="hbm2ddl.auto">update</property>
+
+        <!-- Pool de connexions (facultatif mais recommandé) -->
+        <property name="connection.pool_size">10</property>
+
+        <!-- Mapping des entités (on ajoutera ici les classes plus tard) -->
+
+        <mapping class="com.my.project.model.Utilisateur"/>
+       <mapping class="com.my.project.model.Salle"/>
+       <mapping class="com.my.project.model.Reservation"/>
+       <mapping class="com.my.project.model.Equipement"/>
+
+
+    </session-factory>
+</hibernate-configuration>

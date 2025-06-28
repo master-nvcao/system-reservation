@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.my.project.controller.RegisterController"
+            stylesheets="@/style/styles.css"
+            prefWidth="420" prefHeight="390">
+
+    <children>
+        <VBox layoutX="50" layoutY="20" spacing="12" prefWidth="320" styleClass="padded-vbox">
+            <Label text="Créer un compte" styleClass="header-label"/>
+
+            <HBox spacing="10">
+                <Label text="Nom :" prefWidth="80"/>
+                <TextField fx:id="nomField" prefWidth="200"/>
+            </HBox>
+
+            <HBox spacing="10">
+                <Label text="Email :" prefWidth="80"/>
+                <TextField fx:id="emailField" prefWidth="200"/>
+            </HBox>
+
+            <HBox spacing="10">
+                <Label text="Mot de passe :" prefWidth="80"/>
+                <PasswordField fx:id="passwordField" prefWidth="200"/>
+            </HBox>
+
+            <HBox spacing="10">
+                <Label text="Rôle :" prefWidth="80"/>
+                <ComboBox fx:id="roleComboBox" prefWidth="200"/>
+            </HBox>
+
+            <Button text="S'inscrire" onAction="#handleRegister" styleClass="primary-button" prefWidth="200" alignment="CENTER"/>
+            <Label fx:id="messageLabel" textFill="red" wrapText="true" styleClass="error-label" prefWidth="300" alignment="CENTER"/>
+        </VBox>
+    </children>
+</AnchorPane>

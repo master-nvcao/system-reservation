@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.DatePicker?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.my.project.controller.SuggestionController"
+            stylesheets="@/style/styles.css"
+            prefWidth="600" prefHeight="520">
+
+    <children>
+        <VBox spacing="12" layoutX="50" layoutY="20" prefWidth="500">
+            <Label text="Suggestion de Salle" styleClass="header-label"/>
+
+            <HBox spacing="10">
+                <Label text="Date :" prefWidth="120"/>
+                <DatePicker fx:id="datePicker" prefWidth="350"/>
+            </HBox>
+
+            <HBox spacing="10">
+                <Label text="Heure début :" prefWidth="120"/>
+                <TextField fx:id="heureDebutField" promptText="ex: 10:00" prefWidth="350"/>
+            </HBox>
+
+            <HBox spacing="10">
+                <Label text="Heure fin :" prefWidth="120"/>
+                <TextField fx:id="heureFinField" promptText="ex: 12:00" prefWidth="350"/>
+            </HBox>
+
+            <HBox spacing="10">
+                <Label text="Capacité min. :" prefWidth="120"/>
+                <TextField fx:id="capaciteField" prefWidth="350"/>
+            </HBox>
+
+            <HBox spacing="10">
+                <Label text="Équipements souhaités :" prefWidth="120" alignment="TOP_LEFT"/>
+                <ListView fx:id="equipementList" prefWidth="350" prefHeight="100"/>
+            </HBox>
+
+            <Button text="Suggérer" styleClass="primary-button" alignment="CENTER" onAction="#handleSuggestion"/>
+
+            <TextArea fx:id="resultArea"
+                      promptText="Résultat de la suggestion..."
+                      prefWidth="500" prefHeight="100"
+                      editable="false"
+                      wrapText="true"/>
+        </VBox>
+    </children>
+</AnchorPane>

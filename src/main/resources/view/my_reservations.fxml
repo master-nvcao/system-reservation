@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.my.project.controller.MyReservationsController"
+            stylesheets="@/style/styles.css"
+            prefWidth="750" prefHeight="520">
+
+    <top>
+        <VBox spacing="10" styleClass="padded-vbox">
+            <Label text="Mes Réservations" styleClass="header-label"/>
+        </VBox>
+    </top>
+
+    <center>
+        <TableView fx:id="reservationTable" prefHeight="400" styleClass="table-view">
+            <columns>
+                <TableColumn fx:id="salleCol" text="Salle" prefWidth="150"/>
+                <TableColumn fx:id="dateDebutCol" text="Début" prefWidth="180"/>
+                <TableColumn fx:id="dateFinCol" text="Fin" prefWidth="180"/>
+                <TableColumn fx:id="descCol" text="Description" prefWidth="220"/>
+            </columns>
+        </TableView>
+    </center>
+
+    <bottom>
+        <HBox spacing="12" alignment="CENTER" styleClass="padded-vbox">
+            <Button text="Modifier" onAction="#handleModifier" styleClass="primary-button"/>
+            <Button text="Annuler" onAction="#handleAnnuler" styleClass="danger-button"/>
+            <Button text="Fermer" onAction="#handleFermer" styleClass="secondary-button"/>
+        </HBox>
+    </bottom>
+</BorderPane>

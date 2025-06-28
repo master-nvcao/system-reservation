@@ -1,0 +1,339 @@
+/* Root background and font */
+.dashboard-root {
+    -fx-background-color: #f1f5f9;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+/* Title style */
+.dashboard-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+/* General button base */
+.dashboard-button {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 12 20;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 4, 0, 0, 2);
+}
+
+/* Color variants */
+.blue-button {
+    -fx-background-color: #3b82f6; /* Tailwind blue-500 */
+}
+
+.red-button {
+    -fx-background-color: #ef4444; /* Tailwind red-500 */
+}
+
+.green-button {
+    -fx-background-color: #10b981; /* Tailwind green-500 */
+}
+
+.dashboard-button:hover {
+    -fx-opacity: 0.85;
+}
+
+/* Section padding */
+.padded-vbox {
+    -fx-padding: 20 30 10 30;
+}
+
+/* Header text */
+.header-label {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+/* Table styling */
+.styled-table {
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-table-cell-border-color: #e5e7eb;
+    -fx-font-size: 14px;
+}
+
+/* Buttons */
+.primary-button {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-padding: 8 16;
+}
+
+.secondary-button {
+    -fx-background-color: #64748b;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-padding: 8 16;
+}
+
+.danger-button {
+    -fx-background-color: #ef4444;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-padding: 8 16;
+}
+
+/* Inputs */
+.input-text, .input-date {
+    -fx-pref-width: 140;
+    -fx-background-radius: 4px;
+    -fx-border-color: #cbd5e1;
+    -fx-border-radius: 4px;
+    -fx-padding: 4 8;
+}
+
+/* Action bar at bottom */
+.action-bar {
+    -fx-padding: 20;
+}
+
+/* Label in filter */
+.filter-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #334155;
+}
+/* Root layout background (optional if used globally) */
+.dashboard-root {
+    -fx-background-color: #f8fafc;
+}
+
+/* Header label styling */
+.header-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+/* Buttons */
+.primary-button {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.secondary-button {
+    -fx-background-color: #64748b;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.danger-button {
+    -fx-background-color: #ef4444;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+/* Consistent background */
+.dashboard-root {
+    -fx-background-color: #f8fafc;
+}
+
+/* Title/Header */
+.header-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+/* TableView for clean visuals */
+.table-view {
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 10;
+}
+
+/* Common VBox padding class */
+.padded-vbox {
+    -fx-padding: 15 20 15 20;
+}
+
+/* Buttons (you can reuse if already defined) */
+.primary-button {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.secondary-button {
+    -fx-background-color: #64748b;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.danger-button {
+    -fx-background-color: #ef4444;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+.login-root {
+    -fx-background-color: #f1f5f9;
+}
+
+.error-label {
+    -fx-text-fill: red;
+    -fx-font-size: 12px;
+    -fx-alignment: center;
+}
+
+.padded-vbox {
+    -fx-padding: 15 20 15 20;
+}
+
+.table-view {
+    -fx-border-color: #d1d5db;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+.error-label {
+    -fx-text-fill: red;
+    -fx-alignment: center;
+}
+
+.padded-vbox {
+    -fx-padding: 20 30 20 30;
+    -fx-alignment: center;
+}
+
+.padded-vbox {
+    -fx-padding: 20 30 20 30;
+    -fx-alignment: center;
+}
+
+.error-label {
+    -fx-text-fill: red;
+    -fx-alignment: center;
+}
+
+.header-label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-alignment: center;
+}
+
+.padded-vbox {
+    -fx-padding: 15 25 15 25;
+    -fx-alignment: center;
+}
+
+.table-view {
+    -fx-font-size: 14px;
+}
+
+.primary-button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.secondary-button {
+    -fx-background-color: #95a5a6;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.danger-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+.header-label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-alignment: center;
+}
+
+.primary-button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+}
+
+.text-field, .date-picker, .list-view, .text-area {
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1;
+}
+.padded-vbox {
+    -fx-padding: 20 30 10 30;
+}
+
+.header-label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-alignment: center;
+}
+
+.primary-button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-padding: 8 16;
+}
+
+.secondary-button {
+    -fx-background-color: #95a5a6;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+    -fx-padding: 8 16;
+}
+
+.danger-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+    -fx-padding: 8 16;
+}
+
+.table-view {
+    -fx-border-color: #dcdcdc;
+    -fx-border-width: 1;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+}
+
+.bottom-buttons {
+    -fx-padding: 10 20 20 20;
+}

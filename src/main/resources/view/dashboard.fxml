@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.my.project.controller.DashboardController"
+            stylesheets="@/style/styles.css"
+            prefWidth="600" prefHeight="400"
+            styleClass="dashboard-root">
+
+    <children>
+        <VBox spacing="20" alignment="TOP_CENTER" layoutX="100" layoutY="40" prefWidth="400">
+            <Label fx:id="welcomeLabel" styleClass="header-label"/>
+
+            <Button text="Réserver une salle"
+                    prefWidth="250"
+                    onAction="#handleOpenReservation"
+                    styleClass="primary-button"/>
+
+            <Button text="Mes réservations"
+                    prefWidth="250"
+                    onAction="#handleOpenMyReservations"
+                    styleClass="primary-button"/>
+
+            <Button text="Suggestion intelligente"
+                    prefWidth="250"
+                    onAction="#handleOpenSuggestion"
+                    styleClass="primary-button"/>
+
+            <Button text="Déconnexion"
+                    prefWidth="250"
+                    onAction="#handleLogout"
+                    styleClass="danger-button"/>
+        </VBox>
+    </children>
+</AnchorPane>
