@@ -7,27 +7,70 @@
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.my.project.controller.LoginController"
             stylesheets="@/style/styles.css"
-            prefWidth="420" prefHeight="360"
-            styleClass="login-root">
+            prefWidth="500" prefHeight="400"
+            styleClass="dashboard-root">
 
     <children>
-        <VBox spacing="15" alignment="CENTER" layoutX="40" layoutY="30" prefWidth="340">
-            <Label text="Connexion" styleClass="header-label"/>
+        <!-- Login Card Container -->
+        <VBox layoutX="50" layoutY="40" spacing="25" styleClass="form-card" prefWidth="400" alignment="CENTER">
+            <padding>
+                <Insets top="40" bottom="40" left="50" right="50"/>
+            </padding>
 
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="Email :" prefWidth="90"/>
-                <TextField fx:id="emailField" prefWidth="220"/>
-            </HBox>
+            <!-- Header Section -->
+            <VBox spacing="8" alignment="CENTER">
+                <Label text="🏢" styleClass="brand-icon" style="-fx-font-size: 48px;"/>
+                <Label text="The Hub" styleClass="page-title" style="-fx-font-size: 24px;"/>
+                <Label text="Connectez-vous à votre espace" styleClass="page-subtitle"/>
+            </VBox>
 
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="Mot de passe :" prefWidth="90"/>
-                <PasswordField fx:id="passwordField" prefWidth="220"/>
-            </HBox>
+            <!-- Login Fields -->
+            <VBox spacing="20" alignment="CENTER" prefWidth="300">
 
-            <Label fx:id="messageLabel" wrapText="true" styleClass="error-label" prefWidth="320"/>
+                <VBox spacing="8" alignment="CENTER_LEFT" prefWidth="300">
+                    <Label text="Adresse email" styleClass="form-label"/>
+                    <TextField fx:id="emailField"
+                               promptText="votre.email@exemple.com"
+                               styleClass="modern-input"
+                               prefWidth="300"/>
+                </VBox>
 
-            <Button text="Se connecter" prefWidth="220" onAction="#handleLogin" styleClass="primary-button"/>
-            <Button text="Créer un compte" prefWidth="220" onAction="#handleShowRegister" styleClass="secondary-button"/>
+                <VBox spacing="8" alignment="CENTER_LEFT" prefWidth="300">
+                    <Label text="Mot de passe" styleClass="form-label"/>
+                    <PasswordField fx:id="passwordField"
+                                   promptText="••••••••••"
+                                   styleClass="modern-input"
+                                   prefWidth="300"/>
+                </VBox>
+
+            </VBox>
+
+            <!-- Action Buttons -->
+            <VBox spacing="15" alignment="CENTER" prefWidth="300">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+
+                <Button text="Se connecter"
+                        onAction="#handleLogin"
+                        styleClass="primary-button"
+                        prefWidth="250"/>
+
+                <Button text="Créer un compte"
+                        onAction="#handleShowRegister"
+                        styleClass="secondary-button"
+                        prefWidth="250"/>
+            </VBox>
+
+            <!-- Message Area -->
+            <VBox alignment="CENTER">
+                <Label fx:id="messageLabel"
+                       wrapText="true"
+                       styleClass="form-message"
+                       textAlignment="CENTER"
+                       prefWidth="300"/>
+            </VBox>
+
         </VBox>
     </children>
 </AnchorPane>

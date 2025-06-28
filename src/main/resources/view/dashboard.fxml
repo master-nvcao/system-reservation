@@ -1,37 +1,185 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml"
+<BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.my.project.controller.DashboardController"
             stylesheets="@/style/styles.css"
-            prefWidth="600" prefHeight="400"
+            prefWidth="1000" prefHeight="700"
             styleClass="dashboard-root">
 
-    <children>
-        <VBox spacing="20" alignment="TOP_CENTER" layoutX="100" layoutY="40" prefWidth="400">
-            <Label fx:id="welcomeLabel" styleClass="header-label"/>
+    <!-- Top Navigation Bar -->
+    <top>
+        <HBox styleClass="top-nav" alignment="CENTER_LEFT" spacing="15">
+            <padding>
+                <Insets top="12" bottom="12" left="25" right="25"/>
+            </padding>
 
-            <Button text="Réserver une salle"
-                    prefWidth="250"
-                    onAction="#handleOpenReservation"
-                    styleClass="primary-button"/>
+            <!-- Logo/Brand -->
+            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="brand-section">
+                <Label text="🎓" styleClass="brand-icon"/>
+                <Label text="Student Hub" styleClass="brand-text"/>
+            </HBox>
 
-            <Button text="Mes réservations"
-                    prefWidth="250"
-                    onAction="#handleOpenMyReservations"
-                    styleClass="primary-button"/>
+            <!-- User Info -->
+            <Region HBox.hgrow="ALWAYS"/>
 
-            <Button text="Suggestion intelligente"
-                    prefWidth="250"
-                    onAction="#handleOpenSuggestion"
-                    styleClass="primary-button"/>
+            <HBox spacing="15" alignment="CENTER">
+                <VBox alignment="CENTER_RIGHT" spacing="2">
+                    <Label fx:id="welcomeLabel" text="Bienvenue, Utilisateur!" styleClass="user-welcome"/>
+                    <Label fx:id="roleLabel" text="Étudiant" styleClass="user-role"/>
+                </VBox>
+                <Button text="🔔" fx:id="notificationButton" styleClass="notification-button"/>
+                <Button text="Déconnexion" onAction="#handleLogout" styleClass="logout-button"/>
+            </HBox>
+        </HBox>
+    </top>
 
-            <Button text="Déconnexion"
-                    prefWidth="250"
-                    onAction="#handleLogout"
-                    styleClass="danger-button"/>
-        </VBox>
-    </children>
-</AnchorPane>
+    <!-- Main Content Area -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="main-scroll">
+            <VBox spacing="30" styleClass="user-content">
+                <padding>
+                    <Insets top="30" bottom="30" left="40" right="40"/>
+                </padding>
+
+                <!-- Welcome Section -->
+                <VBox spacing="10" alignment="CENTER">
+                    <Label text="Tableau de Bord Étudiant" styleClass="page-title-user"/>
+                    <Label text="Gérez vos réservations facilement" styleClass="page-subtitle-user"/>
+                </VBox>
+
+                <!-- Quick Stats -->
+                <HBox spacing="25" alignment="CENTER">
+                    <VBox styleClass="user-stat-card" spacing="8" alignment="CENTER">
+                        <Label text="📋" styleClass="user-stat-icon"/>
+                        <Label fx:id="myReservationsCount" text="5" styleClass="user-stat-number"/>
+                        <Label text="Mes Réservations" styleClass="user-stat-label"/>
+                    </VBox>
+
+                    <VBox styleClass="user-stat-card" spacing="8" alignment="CENTER">
+                        <Label text="⏰" styleClass="user-stat-icon"/>
+                        <Label fx:id="upcomingCount" text="2" styleClass="user-stat-number"/>
+                        <Label text="À Venir" styleClass="user-stat-label"/>
+                    </VBox>
+
+                    <VBox styleClass="user-stat-card" spacing="8" alignment="CENTER">
+                        <Label text="✅" styleClass="user-stat-icon"/>
+                        <Label fx:id="completedCount" text="3" styleClass="user-stat-number"/>
+                        <Label text="Terminées" styleClass="user-stat-label"/>
+                    </VBox>
+
+                    <VBox styleClass="user-stat-card" spacing="8" alignment="CENTER">
+                        <Label text="⭐" styleClass="user-stat-icon"/>
+                        <Label fx:id="favoriteRoom" text="Salle A101" styleClass="user-stat-number"/>
+                        <Label text="Salle Préférée" styleClass="user-stat-label"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Main Action Cards -->
+                <GridPane hgap="25" vgap="25" alignment="CENTER">
+                    <!-- Quick Reserve Card -->
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="user-action-card primary-card" spacing="15" alignment="CENTER">
+                        <Label text="🏢" styleClass="action-card-icon"/>
+                        <Label text="Réserver une Salle" styleClass="action-card-title"/>
+                        <Label text="Trouvez et réservez la salle parfaite pour vos besoins" styleClass="action-card-description"/>
+                        <Button text="Commencer" styleClass="action-card-button primary" onAction="#handleOpenReservation"/>
+                    </VBox>
+
+                    <!-- My Reservations Card -->
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="user-action-card success-card" spacing="15" alignment="CENTER">
+                        <Label text="📅" styleClass="action-card-icon"/>
+                        <Label text="Mes Réservations" styleClass="action-card-title"/>
+                        <Label text="Consultez, modifiez ou annulez vos réservations existantes" styleClass="action-card-description"/>
+                        <Button text="Voir Tout" styleClass="action-card-button success" onAction="#handleOpenMyReservations"/>
+                    </VBox>
+
+                    <!-- Smart Suggestion Card -->
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="user-action-card info-card" spacing="15" alignment="CENTER">
+                        <Label text="🤖" styleClass="action-card-icon"/>
+                        <Label text="Suggestion Intelligente" styleClass="action-card-title"/>
+                        <Label text="Laissez notre IA vous recommander la meilleure salle" styleClass="action-card-description"/>
+                        <Button text="Découvrir" styleClass="action-card-button info" onAction="#handleOpenSuggestion"/>
+                    </VBox>
+
+                    <!-- Calendar View Card -->
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="user-action-card warning-card" spacing="15" alignment="CENTER">
+                        <Label text="📊" styleClass="action-card-icon"/>
+                        <Label text="Planning Hebdomadaire" styleClass="action-card-title"/>
+                        <Label text="Visualisez votre emploi du temps et planifiez efficacement" styleClass="action-card-description"/>
+                        <Button text="Consulter" styleClass="action-card-button warning" onAction="#handleOpenCalendar"/>
+                    </VBox>
+                </GridPane>
+
+                <!-- Recent Activity -->
+                <VBox styleClass="activity-container" spacing="15">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Activité Récente" styleClass="section-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="Voir Plus" styleClass="link-button" onAction="#handleOpenMyReservations"/>
+                    </HBox>
+
+                    <VBox fx:id="recentActivityContainer" spacing="10">
+                        <!-- Dynamic content will be added here -->
+                        <HBox styleClass="activity-item" spacing="15" alignment="CENTER_LEFT">
+                            <Label text="🟢" styleClass="activity-status"/>
+                            <VBox spacing="2">
+                                <Label text="Réservation confirmée - Salle A101" styleClass="activity-title"/>
+                                <Label text="Aujourd'hui 14:00 - 16:00" styleClass="activity-time"/>
+                            </VBox>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label text="Il y a 2h" styleClass="activity-timestamp"/>
+                        </HBox>
+
+                        <HBox styleClass="activity-item" spacing="15" alignment="CENTER_LEFT">
+                            <Label text="🟡" styleClass="activity-status"/>
+                            <VBox spacing="2">
+                                <Label text="Réservation à venir - Salle B203" styleClass="activity-title"/>
+                                <Label text="Demain 09:00 - 11:00" styleClass="activity-time"/>
+                            </VBox>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label text="Hier" styleClass="activity-timestamp"/>
+                        </HBox>
+
+                        <HBox styleClass="activity-item" spacing="15" alignment="CENTER_LEFT">
+                            <Label text="✅" styleClass="activity-status"/>
+                            <VBox spacing="2">
+                                <Label text="Réservation terminée - Amphi D" styleClass="activity-title"/>
+                                <Label text="Hier 15:30 - 17:30" styleClass="activity-time"/>
+                            </VBox>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label text="Il y a 1 jour" styleClass="activity-timestamp"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+                <!-- Quick Tips -->
+                <VBox styleClass="tips-container" spacing="12">
+                    <Label text="💡 Conseils Rapides" styleClass="section-title"/>
+
+                    <HBox spacing="20">
+                        <VBox styleClass="tip-card" spacing="8" HBox.hgrow="ALWAYS">
+                            <Label text="⏰" styleClass="tip-icon"/>
+                            <Label text="Réservez à l'avance" styleClass="tip-title"/>
+                            <Label text="Les meilleures salles se réservent rapidement" styleClass="tip-description"/>
+                        </VBox>
+
+                        <VBox styleClass="tip-card" spacing="8" HBox.hgrow="ALWAYS">
+                            <Label text="🔄" styleClass="tip-icon"/>
+                            <Label text="Vérifiez régulièrement" styleClass="tip-title"/>
+                            <Label text="Des créneaux peuvent se libérer" styleClass="tip-description"/>
+                        </VBox>
+
+                        <VBox styleClass="tip-card" spacing="8" HBox.hgrow="ALWAYS">
+                            <Label text="📱" styleClass="tip-icon"/>
+                            <Label text="Activez les notifications" styleClass="tip-title"/>
+                            <Label text="Ne ratez plus jamais vos réservations" styleClass="tip-description"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

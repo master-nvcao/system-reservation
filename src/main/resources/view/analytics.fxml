@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.my.project.controller.AnalyticsController"
+            stylesheets="@/style/styles.css"
+            prefWidth="1100" prefHeight="700"
+            styleClass="dashboard-root">
+
+    <!-- Top Navigation Bar -->
+    <top>
+        <HBox styleClass="top-nav" alignment="CENTER_LEFT" spacing="15">
+            <padding>
+                <Insets top="10" bottom="10" left="20" right="20"/>
+            </padding>
+
+            <!-- Logo/Brand -->
+            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="brand-section">
+                <Label text="📊" styleClass="brand-icon"/>
+                <Label text="Analyse et Rapports Détaillés" styleClass="brand-text"/>
+            </HBox>
+
+            <!-- Time Period Selector -->
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Période:" styleClass="nav-label"/>
+                <ComboBox fx:id="periodComboBox" promptText="Sélectionner période" styleClass="period-selector"/>
+                <Button text="Actualiser" onAction="#refreshAnalytics" styleClass="refresh-button"/>
+                <Button text="Exporter" onAction="#exportAnalytics" styleClass="export-button"/>
+            </HBox>
+        </HBox>
+    </top>
+
+    <!-- Main Content Area -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="analytics-scroll">
+            <VBox spacing="20" styleClass="analytics-content">
+                <padding>
+                    <Insets top="20" bottom="20" left="30" right="30"/>
+                </padding>
+
+                <!-- Key Metrics Cards -->
+                <HBox spacing="20" alignment="CENTER">
+                    <VBox styleClass="metric-card primary-metric" spacing="8" alignment="CENTER">
+                        <Label text="📈" styleClass="metric-icon"/>
+                        <Label fx:id="totalReservationsLabel" text="156" styleClass="metric-number"/>
+                        <Label text="Total Réservations" styleClass="metric-label"/>
+                        <Label fx:id="reservationsTrendLabel" text="+12% ce mois" styleClass="metric-trend positive"/>
+                    </VBox>
+
+                    <VBox styleClass="metric-card success-metric" spacing="8" alignment="CENTER">
+                        <Label text="⏱️" styleClass="metric-icon"/>
+                        <Label fx:id="avgDurationLabel" text="2.5h" styleClass="metric-number"/>
+                        <Label text="Durée Moyenne" styleClass="metric-label"/>
+                        <Label fx:id="durationTrendLabel" text="-5min vs mois dernier" styleClass="metric-trend negative"/>
+                    </VBox>
+
+                    <VBox styleClass="metric-card warning-metric" spacing="8" alignment="CENTER">
+                        <Label text="🎯" styleClass="metric-icon"/>
+                        <Label fx:id="occupancyRateLabel" text="78%" styleClass="metric-number"/>
+                        <Label text="Taux d'Occupation" styleClass="metric-label"/>
+                        <Label fx:id="occupancyTrendLabel" text="+3% ce mois" styleClass="metric-trend positive"/>
+                    </VBox>
+
+                    <VBox styleClass="metric-card info-metric" spacing="8" alignment="CENTER">
+                        <Label text="👑" styleClass="metric-icon"/>
+                        <Label fx:id="topUserLabel" text="Sophie G." styleClass="metric-number"/>
+                        <Label text="Utilisateur le Plus Actif" styleClass="metric-label"/>
+                        <Label fx:id="topUserCountLabel" text="23 réservations" styleClass="metric-trend"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Charts Section -->
+                <GridPane hgap="20" vgap="20">
+                    <!-- Reservations Over Time Chart -->
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="chart-container">
+                        <Label text="📊 Évolution des Réservations" styleClass="chart-title"/>
+                        <LineChart fx:id="reservationsLineChart" styleClass="analytics-chart" prefHeight="300">
+                            <xAxis>
+                                <CategoryAxis side="BOTTOM" />
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis side="LEFT" />
+                            </yAxis>
+                        </LineChart>
+                    </VBox>
+
+                    <!-- Room Usage Pie Chart -->
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="chart-container">
+                        <Label text="🏢 Utilisation par Type de Salle" styleClass="chart-title"/>
+                        <PieChart fx:id="roomUsagePieChart" styleClass="analytics-chart" prefHeight="300"/>
+                    </VBox>
+
+                    <!-- Peak Hours Bar Chart -->
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="chart-container">
+                        <Label text="⏰ Heures de Pointe" styleClass="chart-title"/>
+                        <BarChart fx:id="peakHoursBarChart" styleClass="analytics-chart" prefHeight="300">
+                            <xAxis>
+                                <CategoryAxis side="BOTTOM" />
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis side="LEFT" />
+                            </yAxis>
+                        </BarChart>
+                    </VBox>
+
+                    <!-- Equipment Popularity Chart -->
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="chart-container">
+                        <Label text="🖥️ Popularité des Équipements" styleClass="chart-title"/>
+                        <BarChart fx:id="equipmentPopularityChart" styleClass="analytics-chart" prefHeight="300">
+                            <xAxis>
+                                <CategoryAxis side="BOTTOM" />
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis side="LEFT" />
+                            </yAxis>
+                        </BarChart>
+                    </VBox>
+                </GridPane>
+
+                <!-- Detailed Tables Section -->
+                <HBox spacing="20">
+                    <!-- Top Users Table -->
+                    <VBox styleClass="table-container" HBox.hgrow="ALWAYS">
+                        <Label text="👥 Top 10 Utilisateurs Actifs" styleClass="table-title"/>
+                        <TableView fx:id="topUsersTable" styleClass="analytics-table" prefHeight="200">
+                            <columns>
+                                <TableColumn fx:id="userNameColumn" text="Nom" prefWidth="120"/>
+                                <TableColumn fx:id="userReservationsColumn" text="Réservations" prefWidth="80"/>
+                                <TableColumn fx:id="userHoursColumn" text="Heures" prefWidth="60"/>
+                                <TableColumn fx:id="userRoleColumn" text="Rôle" prefWidth="80"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+
+                    <!-- Popular Rooms Table -->
+                    <VBox styleClass="table-container" HBox.hgrow="ALWAYS">
+                        <Label text="🏢 Salles les Plus Demandées" styleClass="table-title"/>
+                        <TableView fx:id="popularRoomsTable" styleClass="analytics-table" prefHeight="200">
+                            <columns>
+                                <TableColumn fx:id="roomNameColumn" text="Salle" prefWidth="120"/>
+                                <TableColumn fx:id="roomReservationsColumn" text="Réservations" prefWidth="80"/>
+                                <TableColumn fx:id="roomOccupancyColumn" text="Occupation" prefWidth="80"/>
+                                <TableColumn fx:id="roomTypeColumn" text="Type" prefWidth="80"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </HBox>
+
+                <!-- Statistics Summary -->
+                <VBox styleClass="summary-container" spacing="15">
+                    <Label text="📋 Résumé Statistique Détaillé" styleClass="summary-title"/>
+
+                    <GridPane hgap="30" vgap="15" styleClass="summary-grid">
+                        <!-- Usage Statistics -->
+                        <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="8">
+                            <Label text="Statistiques d'Utilisation" styleClass="summary-section-title"/>
+                            <HBox spacing="10">
+                                <Label text="Réservations confirmées:" styleClass="summary-label"/>
+                                <Label fx:id="confirmedReservationsLabel" text="142" styleClass="summary-value"/>
+                            </HBox>
+                            <HBox spacing="10">
+                                <Label text="Réservations annulées:" styleClass="summary-label"/>
+                                <Label fx:id="cancelledReservationsLabel" text="14" styleClass="summary-value"/>
+                            </HBox>
+                            <HBox spacing="10">
+                                <Label text="Taux de confirmation:" styleClass="summary-label"/>
+                                <Label fx:id="confirmationRateLabel" text="91%" styleClass="summary-value"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Time Statistics -->
+                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="8">
+                            <Label text="Statistiques Temporelles" styleClass="summary-section-title"/>
+                            <HBox spacing="10">
+                                <Label text="Heure de pointe:" styleClass="summary-label"/>
+                                <Label fx:id="peakHourLabel" text="14h-15h" styleClass="summary-value"/>
+                            </HBox>
+                            <HBox spacing="10">
+                                <Label text="Jour le plus chargé:" styleClass="summary-label"/>
+                                <Label fx:id="busiestDayLabel" text="Mardi" styleClass="summary-value"/>
+                            </HBox>
+                            <HBox spacing="10">
+                                <Label text="Durée totale:" styleClass="summary-label"/>
+                                <Label fx:id="totalDurationLabel" text="390h" styleClass="summary-value"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Resource Statistics -->
+                        <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" spacing="8">
+                            <Label text="Statistiques Ressources" styleClass="summary-section-title"/>
+                            <HBox spacing="10">
+                                <Label text="Salles les plus utilisées:" styleClass="summary-label"/>
+                                <Label fx:id="mostUsedRoomLabel" text="Salle A101" styleClass="summary-value"/>
+                            </HBox>
+                            <HBox spacing="10">
+                                <Label text="Équipement le plus demandé:" styleClass="summary-label"/>
+                                <Label fx:id="mostRequestedEquipmentLabel" text="Projecteur" styleClass="summary-value"/>
+                            </HBox>
+                            <HBox spacing="10">
+                                <Label text="Capacité moyenne utilisée:" styleClass="summary-label"/>
+                                <Label fx:id="avgCapacityUsedLabel" text="65%" styleClass="summary-value"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- User Statistics -->
+                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" spacing="8">
+                            <Label text="Statistiques Utilisateurs" styleClass="summary-section-title"/>
+                            <HBox spacing="10">
+                                <Label text="Utilisateurs actifs:" styleClass="summary-label"/>
+                                <Label fx:id="activeUsersStatsLabel" text="47" styleClass="summary-value"/>
+                            </HBox>
+                            <HBox spacing="10">
+                                <Label text="Nouveaux utilisateurs:" styleClass="summary-label"/>
+                                <Label fx:id="newUsersLabel" text="8" styleClass="summary-value"/>
+                            </HBox>
+                            <HBox spacing="10">
+                                <Label text="Réservations par utilisateur:" styleClass="summary-label"/>
+                                <Label fx:id="avgReservationsPerUserLabel" text="3.3" styleClass="summary-value"/>
+                            </HBox>
+                        </VBox>
+                    </GridPane>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

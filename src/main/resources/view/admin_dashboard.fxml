@@ -4,36 +4,113 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml"
+<BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.my.project.controller.AdminDashboardController"
             stylesheets="@/style/styles.css"
-            prefWidth="600" prefHeight="500"
+            prefWidth="900" prefHeight="650"
             styleClass="dashboard-root">
 
-    <children>
-        <VBox alignment="TOP_CENTER" spacing="20" prefWidth="400" layoutX="100" layoutY="40">
-            <Label fx:id="adminWelcomeLabel" text="Bienvenue, Admin"
-                   styleClass="dashboard-title"/>
+    <!-- Top Navigation Bar -->
+    <top>
+        <HBox styleClass="top-nav" alignment="CENTER_LEFT" spacing="15">
+            <padding>
+                <Insets top="10" bottom="10" left="20" right="20"/>
+            </padding>
 
-            <Button text="Gérer les utilisateurs"
-                    onAction="#handleUserManagement"
-                    prefWidth="300" styleClass="dashboard-button blue-button"/>
+            <!-- Logo/Brand -->
+            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="brand-section">
+                <Label text="🏢" styleClass="brand-icon"/>
+                <Label text="Admin Hub" styleClass="brand-text"/>
+            </HBox>
 
-            <Button text="Gérer les salles"
-                    onAction="#handleRoomManagement"
-                    prefWidth="300" styleClass="dashboard-button blue-button"/>
+            <!-- Navigation Menu -->
+            <Region HBox.hgrow="ALWAYS"/>
 
-            <Button text="Gérer les équipements"
-                    onAction="#handleEquipementManagement"
-                    prefWidth="300" styleClass="dashboard-button blue-button"/>
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="📋 Réservations" onAction="#handleAllReservations" styleClass="nav-button"/>
+                <Button text="🏢 Salles" onAction="#handleRoomManagement" styleClass="nav-button"/>
+                <Button text="🖥️ Équipements" onAction="#handleEquipementManagement" styleClass="nav-button"/>
+                <Button text="👥 Utilisateurs" onAction="#handleUserManagement" styleClass="nav-button nav-button-active"/>
+                <Button text="📊 Analyse" onAction="#handleAnalytics" styleClass="nav-button"/>
+                <Button text="📄 Rapport" onAction="#handleReports" styleClass="nav-button"/>
+            </HBox>
 
-            <Button text="Voir toutes les réservations"
-                    onAction="#handleAllReservations"
-                    prefWidth="300" styleClass="dashboard-button blue-button"/>
+            <!-- User Section -->
+            <HBox alignment="CENTER_RIGHT" spacing="10">
+                <Label fx:id="adminWelcomeLabel" text="Admin" styleClass="user-name"/>
+                <Button text="Déconnexion" onAction="#handleLogout" styleClass="logout-button"/>
+            </HBox>
+        </HBox>
+    </top>
 
-            <Button text="Déconnexion"
-                    onAction="#handleLogout"
-                    prefWidth="300" styleClass="dashboard-button red-button"/>
+    <!-- Main Content Area -->
+    <center>
+        <VBox styleClass="main-content" spacing="25">
+            <padding>
+                <Insets top="25" bottom="25" left="40" right="40"/>
+            </padding>
+
+            <!-- Welcome Section -->
+            <VBox spacing="8" alignment="CENTER">
+                <Label text="Tableau de Bord Administrateur" styleClass="page-title"/>
+                <Label text="Gérez votre système efficacement" styleClass="page-subtitle"/>
+            </VBox>
+
+            <!-- Dashboard Cards Grid -->
+            <GridPane hgap="20" vgap="20" alignment="CENTER">
+                <!-- Row 1 -->
+                <VBox fx:id="usersCard" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="dashboard-card" spacing="12" alignment="CENTER">
+                    <Label text="👥" styleClass="card-icon"/>
+                    <Label text="Gérer les Utilisateurs" styleClass="card-title"/>
+                    <Label text="Ajouter, modifier et supprimer des utilisateurs" styleClass="card-description"/>
+                    <Button text="Accéder" styleClass="card-button primary-button" onAction="#handleUserManagement"/>
+                </VBox>
+
+                <VBox fx:id="roomsCard" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="dashboard-card" spacing="12" alignment="CENTER">
+                    <Label text="🏢" styleClass="card-icon"/>
+                    <Label text="Gérer les Salles" styleClass="card-title"/>
+                    <Label text="Configuration et gestion des espaces" styleClass="card-description"/>
+                    <Button text="Accéder" styleClass="card-button primary-button" onAction="#handleRoomManagement"/>
+                </VBox>
+
+                <!-- Row 2 -->
+                <VBox fx:id="equipmentCard" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="dashboard-card" spacing="12" alignment="CENTER">
+                    <Label text="🖥️" styleClass="card-icon"/>
+                    <Label text="Gérer les Équipements" styleClass="card-title"/>
+                    <Label text="Inventaire et maintenance du matériel" styleClass="card-description"/>
+                    <Button text="Accéder" styleClass="card-button primary-button" onAction="#handleEquipementManagement"/>
+                </VBox>
+
+                <VBox fx:id="reservationsCard" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="dashboard-card" spacing="12" alignment="CENTER">
+                    <Label text="📋" styleClass="card-icon"/>
+                    <Label text="Toutes les Réservations" styleClass="card-title"/>
+                    <Label text="Supervision et validation des demandes" styleClass="card-description"/>
+                    <Button text="Accéder" styleClass="card-button primary-button" onAction="#handleAllReservations"/>
+                </VBox>
+            </GridPane>
+
+            <!-- Quick Stats Section -->
+            <HBox spacing="25" alignment="CENTER">
+                <VBox styleClass="stat-card" spacing="6" alignment="CENTER">
+                    <Label fx:id="activeUsersCount" text="24" styleClass="stat-number"/>
+                    <Label text="Utilisateurs Actifs" styleClass="stat-label"/>
+                </VBox>
+
+                <VBox styleClass="stat-card" spacing="6" alignment="CENTER">
+                    <Label fx:id="availableRoomsCount" text="15" styleClass="stat-number"/>
+                    <Label text="Salles Disponibles" styleClass="stat-label"/>
+                </VBox>
+
+                <VBox styleClass="stat-card" spacing="6" alignment="CENTER">
+                    <Label fx:id="activeReservationsCount" text="36" styleClass="stat-number"/>
+                    <Label text="Réservations Actives" styleClass="stat-label"/>
+                </VBox>
+
+                <VBox styleClass="stat-card" spacing="6" alignment="CENTER">
+                    <Label fx:id="pendingRequestsCount" text="8" styleClass="stat-number"/>
+                    <Label text="Demandes en Attente" styleClass="stat-label"/>
+                </VBox>
+            </HBox>
         </VBox>
-    </children>
-</AnchorPane>
+    </center>
+</BorderPane>

@@ -3,10 +3,15 @@ package com.my.project.controller;
 import com.my.project.model.Utilisateur;
 import com.my.project.util.HibernateUtil;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
+import java.io.IOException;
 
 public class RegisterController {
 
@@ -65,6 +70,36 @@ public class RegisterController {
             e.printStackTrace();
             messageLabel.setTextFill(Color.RED);
             messageLabel.setText("Erreur lors de l'inscription.");
+        }
+    }
+
+
+    @FXML
+    private void handleShowLogin() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/login.fxml"));
+            Stage loginStage = new Stage();
+            loginStage.setTitle("The Hub - Connexion");
+            loginStage.setScene(new Scene(loader.load()));
+            loginStage.setResizable(false);
+            loginStage.centerOnScreen();
+            loginStage.show();
+
+            // Close the register window
+            ((Stage) emailField.getScene().getWindow()).close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showMessage("Erreur lors de l'ouverture du formulaire de connexion.", "error");
+        }
+    }
+
+    private void showMessage(String message, String type) {
+        messageLabel.setText(message);
+        if ("success".equals(type)) {
+            messageLabel.setStyle("-fx-text-fill: #10b981; -fx-font-weight: bold;");
+        } else {
+            messageLabel.setStyle("-fx-text-fill: #ef4444; -fx-font-weight: bold;");
         }
     }
 

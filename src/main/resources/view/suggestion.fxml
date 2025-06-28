@@ -7,10 +7,11 @@
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.my.project.controller.SuggestionController"
             stylesheets="@/style/styles.css"
-            prefWidth="600" prefHeight="520">
+            prefWidth="600" prefHeight="550">
 
     <children>
-        <VBox spacing="12" layoutX="50" layoutY="20" prefWidth="500">
+        <VBox layoutX="50" layoutY="20" spacing="12" styleClass="padded-vbox" prefWidth="500">
+
             <Label text="Suggestion de Salle" styleClass="header-label"/>
 
             <HBox spacing="10">
@@ -30,21 +31,25 @@
 
             <HBox spacing="10">
                 <Label text="Capacité min. :" prefWidth="120"/>
-                <TextField fx:id="capaciteField" prefWidth="350"/>
+                <TextField fx:id="capaciteField" promptText="ex: 30" prefWidth="350"/>
             </HBox>
 
-            <HBox spacing="10">
-                <Label text="Équipements souhaités :" prefWidth="120" alignment="TOP_LEFT"/>
+            <HBox spacing="10" alignment="TOP_LEFT">
+                <Label text="Équipements :" prefWidth="120"/>
                 <ListView fx:id="equipementList" prefWidth="350" prefHeight="100"/>
             </HBox>
 
-            <Button text="Suggérer" styleClass="primary-button" alignment="CENTER" onAction="#handleSuggestion"/>
+            <Button text="Suggérer" onAction="#handleSuggestion" styleClass="primary-button" prefWidth="200" alignment="CENTER"/>
 
-            <TextArea fx:id="resultArea"
-                      promptText="Résultat de la suggestion..."
-                      prefWidth="500" prefHeight="100"
-                      editable="false"
-                      wrapText="true"/>
+            <HBox spacing="10" alignment="TOP_LEFT">
+                <Label text="Résultat :" prefWidth="120"/>
+                <TextArea fx:id="resultArea"
+                          promptText="Résultat de la suggestion..."
+                          prefWidth="350" prefHeight="120"
+                          editable="false"
+                          wrapText="true"/>
+            </HBox>
+
         </VBox>
     </children>
 </AnchorPane>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -8,33 +9,66 @@
             stylesheets="@/style/styles.css"
             prefWidth="850" prefHeight="520">
 
+    <!-- Page Header -->
     <top>
         <VBox spacing="8" styleClass="padded-vbox">
             <Label text="Gestion des Salles" styleClass="header-label"/>
         </VBox>
     </top>
 
+    <!-- Main Content -->
     <center>
-        <TableView fx:id="salleTable" prefHeight="400" styleClass="table-view">
-            <columns>
-                <TableColumn fx:id="idCol" text="ID" prefWidth="50"/>
-                <TableColumn fx:id="nomCol" text="Nom" prefWidth="150"/>
-                <TableColumn fx:id="capaciteCol" text="Capacité" prefWidth="100"/>
-                <TableColumn fx:id="typeCol" text="Type" prefWidth="100"/>
-                <TableColumn fx:id="dispoCol" text="Disponible" prefWidth="100"/>
-                <TableColumn fx:id="equipementCol" text="Équipements" prefWidth="300"/>
-            </columns>
-        </TableView>
+        <VBox spacing="15" styleClass="padded-vbox">
+
+            <!-- Add Button -->
+            <HBox alignment="CENTER_LEFT">
+                <Button text="Ajouter une Salle"
+                        onAction="#handleAdd"
+                        styleClass="primary-button"
+                        prefWidth="150"/>
+            </HBox>
+
+            <!-- Table -->
+            <TableView fx:id="salleTable" prefHeight="350" styleClass="table-view">
+                <columns>
+                    <TableColumn fx:id="idCol" text="ID" prefWidth="60"/>
+                    <TableColumn fx:id="nomCol" text="Nom" prefWidth="150"/>
+                    <TableColumn fx:id="capaciteCol" text="Capacité" prefWidth="80"/>
+                    <TableColumn fx:id="typeCol" text="Type" prefWidth="100"/>
+                    <TableColumn fx:id="dispoCol" text="Disponible" prefWidth="100"/>
+                    <TableColumn fx:id="equipementCol" text="Équipements" prefWidth="300"/>
+                </columns>
+            </TableView>
+
+            <!-- Selection Status -->
+            <HBox alignment="CENTER">
+                <Label fx:id="selectionLabel"
+                       text="Aucune sélection"
+                       styleClass="error-label"
+                       textFill="#64748b"/>
+            </HBox>
+
+        </VBox>
     </center>
 
+    <!-- Action Buttons -->
     <bottom>
         <HBox spacing="12" alignment="CENTER" styleClass="padded-vbox">
-            <Button text="Ajouter" onAction="#handleAdd" styleClass="primary-button"/>
-            <Button text="Modifier" onAction="#handleEdit" styleClass="secondary-button"/>
-            <Button text="Supprimer" onAction="#handleDelete" styleClass="danger-button"/>
-            <Button text="(Dés)activer" onAction="#handleToggleDisponibilite" styleClass="secondary-button"/>
-            <Button text="Associer équipements" onAction="#handleAssocierEquipements" styleClass="primary-button"/>
-            <Button text="Fermer" onAction="#handleClose" styleClass="secondary-button"/>
+            <Button text="Modifier"
+                    onAction="#handleEdit"
+                    styleClass="secondary-button"/>
+            <Button text="Supprimer"
+                    onAction="#handleDelete"
+                    styleClass="danger-button"/>
+            <Button text="(Dés)activer"
+                    onAction="#handleToggleDisponibilite"
+                    styleClass="secondary-button"/>
+            <Button text="Associer équipements"
+                    onAction="#handleAssocierEquipements"
+                    styleClass="primary-button"/>
+            <Button text="Fermer"
+                    onAction="#handleClose"
+                    styleClass="secondary-button"/>
         </HBox>
     </bottom>
 

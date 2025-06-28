@@ -1,39 +1,154 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.my.project.controller.EquipementManagementController"
             stylesheets="@/style/styles.css"
-            prefWidth="1000" prefHeight="600"
+            prefWidth="1200" prefHeight="750"
             styleClass="dashboard-root">
 
+    <!-- Top Navigation Bar -->
     <top>
-        <VBox spacing="10" alignment="CENTER" styleClass="padded-vbox">
-            <Label text="Gérer les Équipements" styleClass="header-label"/>
+        <VBox spacing="0">
+            <!-- Header -->
+            <HBox styleClass="top-nav" alignment="CENTER_LEFT" spacing="15">
+                <padding>
+                    <Insets top="12" bottom="12" left="25" right="25"/>
+                </padding>
+
+                <!-- Logo/Brand -->
+                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="brand-section">
+                    <Label text="🖥️" styleClass="brand-icon"/>
+                    <Label text="Gestion des Équipements" styleClass="brand-text"/>
+                </HBox>
+
+                <!-- Actions -->
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <HBox spacing="12" alignment="CENTER">
+                    <Button text="➕ Ajouter" onAction="#handleAdd" styleClass="success-button"/>
+                    <Button text="🔄 Actualiser" onAction="#handleRefresh" styleClass="refresh-button"/>
+                    <Button text="📊 Statistiques" onAction="#handleShowStats" styleClass="info-button"/>
+                </HBox>
+            </HBox>
+
+            <!-- Filters and Search Section -->
+            <HBox styleClass="filters-section" spacing="15" alignment="CENTER_LEFT">
+                <padding>
+                    <Insets top="15" bottom="15" left="25" right="25"/>
+                </padding>
+
+                <VBox spacing="5" alignment="CENTER_LEFT">
+                    <Label text="Rechercher" styleClass="filter-label"/>
+                    <TextField fx:id="searchField" promptText="Nom ou description..." styleClass="filter-input"/>
+                </VBox>
+
+                <VBox spacing="5" alignment="CENTER_LEFT">
+                    <Label text="Type" styleClass="filter-label"/>
+                    <ComboBox fx:id="typeFilter" promptText="Tous les types" styleClass="filter-combo"/>
+                </VBox>
+
+                <VBox spacing="5" alignment="CENTER_LEFT">
+                    <Label text="État" styleClass="filter-label"/>
+                    <ComboBox fx:id="statusFilter" promptText="Tous les états" styleClass="filter-combo"/>
+                </VBox>
+
+                <VBox spacing="5" alignment="BOTTOM_LEFT">
+                    <Label text=" " styleClass="filter-label"/>
+                    <HBox spacing="8">
+                        <Button text="🔍 Filtrer" onAction="#handleFilter" styleClass="filter-button"/>
+                        <Button text="🗑️ Effacer" onAction="#handleClearFilters" styleClass="clear-button"/>
+                    </HBox>
+                </VBox>
+            </HBox>
         </VBox>
     </top>
 
+    <!-- Main Content Area -->
     <center>
-        <TableView fx:id="equipementTable" prefHeight="450" styleClass="table-view">
-            <columns>
-                <TableColumn fx:id="idCol" text="ID" prefWidth="60"/>
-                <TableColumn fx:id="nomCol" text="Nom" prefWidth="180"/>
-                <TableColumn fx:id="descCol" text="Description" prefWidth="280"/>
-                <TableColumn fx:id="typeCol" text="Type" prefWidth="150"/>
-                <TableColumn fx:id="sallesCol" text="Salles associées" prefWidth="300"/>
-            </columns>
-        </TableView>
+        <VBox spacing="20" styleClass="main-content">
+            <padding>
+                <Insets top="25" bottom="25" left="30" right="30"/>
+            </padding>
+
+            <!-- Statistics Cards -->
+            <HBox spacing="25" alignment="CENTER">
+                <VBox styleClass="stat-card-small" spacing="8" alignment="CENTER">
+                    <Label fx:id="totalEquipmentLabel" text="45" styleClass="stat-number-small"/>
+                    <Label text="Total Équipements" styleClass="stat-label-small"/>
+                </VBox>
+
+                <VBox styleClass="stat-card-small" spacing="8" alignment="CENTER">
+                    <Label fx:id="availableEquipmentLabel" text="38" styleClass="stat-number-small"/>
+                    <Label text="Disponibles" styleClass="stat-label-small"/>
+                </VBox>
+
+                <VBox styleClass="stat-card-small" spacing="8" alignment="CENTER">
+                    <Label fx:id="assignedEquipmentLabel" text="32" styleClass="stat-number-small"/>
+                    <Label text="Assignés" styleClass="stat-label-small"/>
+                </VBox>
+
+                <VBox styleClass="stat-card-small" spacing="8" alignment="CENTER">
+                    <Label fx:id="equipmentTypesLabel" text="8" styleClass="stat-number-small"/>
+                    <Label text="Types Différents" styleClass="stat-label-small"/>
+                </VBox>
+
+                <VBox styleClass="stat-card-small" spacing="8" alignment="CENTER">
+                    <Label fx:id="mostUsedTypeLabel" text="Projecteur" styleClass="stat-number-small"/>
+                    <Label text="Type le Plus Utilisé" styleClass="stat-label-small"/>
+                </VBox>
+            </HBox>
+
+            <!-- Table Container -->
+            <VBox styleClass="table-container-modern" VBox.vgrow="ALWAYS">
+                <HBox alignment="CENTER_LEFT" spacing="15" styleClass="table-header">
+                    <Label text="Liste des Équipements" styleClass="table-title-modern"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="tableInfoLabel" text="Affichage de 45 équipements" styleClass="table-info"/>
+                </HBox>
+
+                <TableView fx:id="equipementTable" VBox.vgrow="ALWAYS" styleClass="modern-table">
+                    <columns>
+                        <TableColumn fx:id="idCol" text="ID" prefWidth="60"/>
+                        <TableColumn fx:id="nomCol" text="Nom" prefWidth="150"/>
+                        <TableColumn fx:id="typeCol" text="Type" prefWidth="120"/>
+                        <TableColumn fx:id="descCol" text="Description" prefWidth="250"/>
+                        <TableColumn fx:id="statusCol" text="État" prefWidth="100"/>
+                        <TableColumn fx:id="sallesCountCol" text="Nb Salles" prefWidth="80"/>
+                        <TableColumn fx:id="sallesCol" text="Salles Associées" prefWidth="200"/>
+                        <TableColumn fx:id="lastUsedCol" text="Dernière Utilisation" prefWidth="130"/>
+                        <TableColumn fx:id="actionsCol" text="Actions" prefWidth="150"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </VBox>
     </center>
 
+    <!-- Bottom Action Bar -->
     <bottom>
-        <HBox spacing="15" alignment="CENTER" styleClass="padded-vbox">
-            <Button text="Ajouter" onAction="#handleAdd" styleClass="primary-button"/>
-            <Button text="Modifier" onAction="#handleEdit" styleClass="primary-button"/>
-            <Button text="Supprimer" onAction="#handleDelete" styleClass="danger-button"/>
-            <Button text="Associer à salles" onAction="#handleAssocierSalles" styleClass="secondary-button"/>
-            <Button text="Fermer" onAction="#handleClose" styleClass="secondary-button"/>
+        <HBox styleClass="bottom-action-bar" alignment="CENTER" spacing="15">
+            <padding>
+                <Insets top="15" bottom="15" left="30" right="30"/>
+            </padding>
+
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Button text="✏️ Modifier" onAction="#handleEdit" styleClass="action-button primary"/>
+                <Button text="🗑️ Supprimer" onAction="#handleDelete" styleClass="action-button danger"/>
+                <Button text="🔗 Associer Salles" onAction="#handleAssocierSalles" styleClass="action-button secondary"/>
+                <Button text="📋 Dupliquer" onAction="#handleDuplicate" styleClass="action-button secondary"/>
+            </HBox>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <HBox spacing="12" alignment="CENTER_RIGHT">
+                <Label text="Sélectionné:" styleClass="selection-label"/>
+                <Label fx:id="selectionInfoLabel" text="Aucun" styleClass="selection-info"/>
+                <Button text="📊 Export" onAction="#handleExport" styleClass="action-button info"/>
+                <Button text="✖️ Fermer" onAction="#handleClose" styleClass="action-button secondary"/>
+            </HBox>
         </HBox>
     </bottom>
 </BorderPane>

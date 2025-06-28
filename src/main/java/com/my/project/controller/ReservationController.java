@@ -74,6 +74,7 @@ public class ReservationController {
                     return;
                 }
 
+                System.err.println("Utilisateur connecter : " +utilisateurConnecte);
                 // OK : enregistrement
                 Transaction tx = session.beginTransaction();
                 Reservation res = new Reservation();

@@ -1,51 +1,152 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.my.project.controller.AllReservationsController"
             stylesheets="@/style/styles.css"
-            prefWidth="1000" prefHeight="600"
+            prefWidth="1200" prefHeight="700"
             styleClass="dashboard-root">
 
+    <!-- Top Navigation Bar -->
     <top>
-        <VBox spacing="15" styleClass="padded-vbox">
-            <Label text="Toutes les Réservations" styleClass="header-label"/>
+        <VBox spacing="0">
+            <!-- Header -->
+            <HBox styleClass="top-nav" alignment="CENTER_LEFT" spacing="15">
+                <padding>
+                    <Insets top="10" bottom="10" left="20" right="20"/>
+                </padding>
 
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="Salle :" styleClass="filter-label"/>
-                <TextField fx:id="salleFilter" promptText="Nom de salle" styleClass="input-text"/>
+                <!-- Logo/Brand -->
+                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="brand-section">
+                    <Label text="📋" styleClass="brand-icon"/>
+                    <Label text="Gestion des Réservations" styleClass="brand-text"/>
+                </HBox>
 
-                <Label text="Utilisateur :" styleClass="filter-label"/>
-                <TextField fx:id="userFilter" promptText="Email utilisateur" styleClass="input-text"/>
+                <!-- Actions -->
+                <Region HBox.hgrow="ALWAYS"/>
 
-                <Label text="Date :" styleClass="filter-label"/>
-                <DatePicker fx:id="dateFilter" styleClass="input-date"/>
+                <HBox spacing="10" alignment="CENTER">
+                    <Button text="➕ Nouvelle" styleClass="success-button"/>
+                    <Button text="🔄 Actualiser" onAction="#handleRefresh" styleClass="refresh-button"/>
+                    <Button text="📊 Exporter" onAction="#handleExporter" styleClass="export-button"/>
+                </HBox>
+            </HBox>
 
-                <Button text="Filtrer" onAction="#handleFiltrer" styleClass="primary-button"/>
-                <Button text="Exporter" onAction="#handleExporter" styleClass="secondary-button"/>
+            <!-- Filters Section -->
+            <HBox styleClass="filters-section" spacing="15" alignment="CENTER_LEFT">
+                <padding>
+                    <Insets top="15" bottom="15" left="20" right="20"/>
+                </padding>
+
+                <VBox spacing="5" alignment="CENTER_LEFT">
+                    <Label text="Filtrer par Salle" styleClass="filter-label"/>
+                    <TextField fx:id="salleFilter" promptText="Nom de la salle..." styleClass="filter-input"/>
+                </VBox>
+
+                <VBox spacing="5" alignment="CENTER_LEFT">
+                    <Label text="Filtrer par Utilisateur" styleClass="filter-label"/>
+                    <TextField fx:id="userFilter" promptText="Email utilisateur..." styleClass="filter-input"/>
+                </VBox>
+
+                <VBox spacing="5" alignment="CENTER_LEFT">
+                    <Label text="Filtrer par Date" styleClass="filter-label"/>
+                    <DatePicker fx:id="dateFilter" promptText="Sélectionner date..." styleClass="filter-date"/>
+                </VBox>
+
+                <VBox spacing="5" alignment="CENTER_LEFT">
+                    <Label text="Statut" styleClass="filter-label"/>
+                    <ComboBox fx:id="statusFilter" promptText="Tous les statuts" styleClass="filter-combo"/>
+                </VBox>
+
+                <VBox spacing="5" alignment="BOTTOM_LEFT">
+                    <Label text=" " styleClass="filter-label"/> <!-- Spacer -->
+                    <HBox spacing="8">
+                        <Button text="🔍 Filtrer" onAction="#handleFiltrer" styleClass="filter-button"/>
+                        <Button text="🗑️ Effacer" onAction="#handleClearFilters" styleClass="clear-button"/>
+                    </HBox>
+                </VBox>
             </HBox>
         </VBox>
     </top>
 
+    <!-- Main Content Area -->
     <center>
-        <TableView fx:id="reservationTable" prefHeight="450" styleClass="styled-table">
-            <columns>
-                <TableColumn fx:id="salleCol" text="Salle" prefWidth="150"/>
-                <TableColumn fx:id="userCol" text="Utilisateur" prefWidth="150"/>
-                <TableColumn fx:id="dateDebutCol" text="Date Début" prefWidth="200"/>
-                <TableColumn fx:id="dateFinCol" text="Date Fin" prefWidth="200"/>
-                <TableColumn fx:id="descCol" text="Description" prefWidth="250"/>
-            </columns>
-        </TableView>
+        <VBox spacing="15" styleClass="main-content">
+            <padding>
+                <Insets top="20" bottom="20" left="30" right="30"/>
+            </padding>
+
+            <!-- Statistics Cards -->
+            <HBox spacing="20" alignment="CENTER">
+                <VBox styleClass="stat-card-small" spacing="6" alignment="CENTER">
+                    <Label fx:id="totalReservationsLabel" text="156" styleClass="stat-number-small"/>
+                    <Label text="Total Réservations" styleClass="stat-label-small"/>
+                </VBox>
+
+                <VBox styleClass="stat-card-small" spacing="6" alignment="CENTER">
+                    <Label fx:id="todayReservationsLabel" text="12" styleClass="stat-number-small"/>
+                    <Label text="Aujourd'hui" styleClass="stat-label-small"/>
+                </VBox>
+
+                <VBox styleClass="stat-card-small" spacing="6" alignment="CENTER">
+                    <Label fx:id="activeReservationsLabel" text="8" styleClass="stat-number-small"/>
+                    <Label text="En Cours" styleClass="stat-label-small"/>
+                </VBox>
+
+                <VBox styleClass="stat-card-small" spacing="6" alignment="CENTER">
+                    <Label fx:id="upcomingReservationsLabel" text="24" styleClass="stat-number-small"/>
+                    <Label text="À Venir" styleClass="stat-label-small"/>
+                </VBox>
+            </HBox>
+
+            <!-- Table Container -->
+            <VBox styleClass="table-container-modern" VBox.vgrow="ALWAYS">
+                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="table-header">
+                    <Label text="Liste des Réservations" styleClass="table-title-modern"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="tableInfoLabel" text="Affichage de 156 réservations" styleClass="table-info"/>
+                </HBox>
+
+                <TableView fx:id="reservationTable" VBox.vgrow="ALWAYS" styleClass="modern-table">
+                    <columns>
+                        <TableColumn fx:id="idCol" text="ID" prefWidth="60"/>
+                        <TableColumn fx:id="salleCol" text="Salle" prefWidth="140"/>
+                        <TableColumn fx:id="userCol" text="Utilisateur" prefWidth="160"/>
+                        <TableColumn fx:id="dateDebutCol" text="Date Début" prefWidth="140"/>
+                        <TableColumn fx:id="dateFinCol" text="Date Fin" prefWidth="140"/>
+                        <TableColumn fx:id="durationCol" text="Durée" prefWidth="80"/>
+                        <TableColumn fx:id="statusCol" text="Statut" prefWidth="100"/>
+                        <TableColumn fx:id="descCol" text="Description" prefWidth="200"/>
+                        <TableColumn fx:id="actionsCol" text="Actions" prefWidth="120"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </VBox>
     </center>
 
+    <!-- Bottom Action Bar -->
     <bottom>
-        <HBox alignment="CENTER" spacing="20" styleClass="action-bar">
-            <Button text="Modifier" onAction="#handleModifier" styleClass="primary-button"/>
-            <Button text="Supprimer" onAction="#handleSupprimer" styleClass="danger-button"/>
-            <Button text="Fermer" onAction="#handleFermer" styleClass="secondary-button"/>
+        <HBox styleClass="bottom-action-bar" alignment="CENTER" spacing="15">
+            <padding>
+                <Insets top="15" bottom="15" left="30" right="30"/>
+            </padding>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button text="✏️ Modifier" onAction="#handleModifier" styleClass="action-button primary"/>
+                <Button text="🗑️ Supprimer" onAction="#handleSupprimer" styleClass="action-button danger"/>
+                <Button text="📋 Dupliquer" onAction="#handleDuplicate" styleClass="action-button secondary"/>
+            </HBox>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Label text="Sélectionné:" styleClass="selection-label"/>
+                <Label fx:id="selectionInfoLabel" text="Aucun" styleClass="selection-info"/>
+                <Button text="✖️ Fermer" onAction="#handleFermer" styleClass="action-button secondary"/>
+            </HBox>
         </HBox>
     </bottom>
 </BorderPane>

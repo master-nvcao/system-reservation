@@ -85,12 +85,35 @@ public class LoginController {
     private void handleShowRegister() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/register.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("Créer un compte");
-            stage.setScene(new Scene(loader.load()));
-            stage.show();
+            Stage registerStage = new Stage();
+            registerStage.setTitle("Admin Hub - Créer un compte");
+            registerStage.setScene(new Scene(loader.load()));
+            registerStage.setResizable(false);
+            registerStage.centerOnScreen();
+            registerStage.show();
+
+            // Optionally close the login window
+             ((Stage) emailField.getScene().getWindow()).close();
+
         } catch (IOException e) {
             e.printStackTrace();
+            showMessage("Erreur lors de l'ouverture du formulaire d'inscription.", "error");
         }
+    }
+
+    private void showMessage(String message, String type) {
+        messageLabel.setText(message);
+        if ("success".equals(type)) {
+            messageLabel.setStyle("-fx-text-fill: #10b981; -fx-font-weight: bold;");
+        } else {
+            messageLabel.setStyle("-fx-text-fill: #ef4444; -fx-font-weight: bold;");
+        }
+    }
+
+    // Method to clear the form
+    private void clearForm() {
+        emailField.clear();
+        passwordField.clear();
+        messageLabel.setText("");
     }
 }

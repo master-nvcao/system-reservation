@@ -2,38 +2,90 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.my.project.controller.RegisterController"
             stylesheets="@/style/styles.css"
-            prefWidth="420" prefHeight="390">
+            prefWidth="500" prefHeight="480"
+            styleClass="dashboard-root">
 
     <children>
-        <VBox layoutX="50" layoutY="20" spacing="12" prefWidth="320" styleClass="padded-vbox">
-            <Label text="Créer un compte" styleClass="header-label"/>
+        <!-- Register Card Container -->
+        <VBox layoutX="50" layoutY="30" spacing="25" styleClass="form-card" prefWidth="400" alignment="CENTER">
+            <padding>
+                <Insets top="40" bottom="40" left="50" right="50"/>
+            </padding>
 
-            <HBox spacing="10">
-                <Label text="Nom :" prefWidth="80"/>
-                <TextField fx:id="nomField" prefWidth="200"/>
-            </HBox>
+            <!-- Header Section -->
+            <VBox spacing="8" alignment="CENTER">
+                <Label text="👤" styleClass="brand-icon" style="-fx-font-size: 48px;"/>
+                <Label text="Créer un compte" styleClass="page-title" style="-fx-font-size: 24px;"/>
+                <Label text="Rejoignez The Hub" styleClass="page-subtitle"/>
+            </VBox>
 
-            <HBox spacing="10">
-                <Label text="Email :" prefWidth="80"/>
-                <TextField fx:id="emailField" prefWidth="200"/>
-            </HBox>
+            <!-- Register Fields -->
+            <VBox spacing="20" alignment="CENTER" prefWidth="300">
 
-            <HBox spacing="10">
-                <Label text="Mot de passe :" prefWidth="80"/>
-                <PasswordField fx:id="passwordField" prefWidth="200"/>
-            </HBox>
+                <VBox spacing="8" alignment="CENTER_LEFT" prefWidth="300">
+                    <Label text="Nom complet" styleClass="form-label"/>
+                    <TextField fx:id="nomField"
+                               promptText="Votre nom complet"
+                               styleClass="modern-input"
+                               prefWidth="300"/>
+                </VBox>
 
-            <HBox spacing="10">
-                <Label text="Rôle :" prefWidth="80"/>
-                <ComboBox fx:id="roleComboBox" prefWidth="200"/>
-            </HBox>
+                <VBox spacing="8" alignment="CENTER_LEFT" prefWidth="300">
+                    <Label text="Adresse email" styleClass="form-label"/>
+                    <TextField fx:id="emailField"
+                               promptText="votre.email@exemple.com"
+                               styleClass="modern-input"
+                               prefWidth="300"/>
+                </VBox>
 
-            <Button text="S'inscrire" onAction="#handleRegister" styleClass="primary-button" prefWidth="200" alignment="CENTER"/>
-            <Label fx:id="messageLabel" textFill="red" wrapText="true" styleClass="error-label" prefWidth="300" alignment="CENTER"/>
+                <VBox spacing="8" alignment="CENTER_LEFT" prefWidth="300">
+                    <Label text="Mot de passe" styleClass="form-label"/>
+                    <PasswordField fx:id="passwordField"
+                                   promptText="••••••••••"
+                                   styleClass="modern-input"
+                                   prefWidth="300"/>
+                </VBox>
+
+                <VBox spacing="8" alignment="CENTER_LEFT" prefWidth="300">
+                    <Label text="Rôle" styleClass="form-label"/>
+                    <ComboBox fx:id="roleComboBox"
+                              styleClass="modern-input"
+                              prefWidth="300"/>
+                </VBox>
+
+            </VBox>
+
+            <!-- Action Buttons -->
+            <VBox spacing="15" alignment="CENTER" prefWidth="300">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+
+                <Button text="S'inscrire"
+                        onAction="#handleRegister"
+                        styleClass="primary-button"
+                        prefWidth="250"/>
+
+                <Button text="Déjà un compte ? Se connecter"
+                        onAction="#handleShowLogin"
+                        styleClass="secondary-button"
+                        prefWidth="250"/>
+            </VBox>
+
+            <!-- Message Area -->
+            <VBox alignment="CENTER">
+                <Label fx:id="messageLabel"
+                       wrapText="true"
+                       styleClass="form-message"
+                       textAlignment="CENTER"
+                       prefWidth="300"/>
+            </VBox>
+
         </VBox>
     </children>
 </AnchorPane>

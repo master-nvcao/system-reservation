@@ -8,32 +8,53 @@
             stylesheets="@/style/styles.css"
             prefWidth="750" prefHeight="520">
 
+    <!-- Page Header -->
     <top>
-        <VBox spacing="10" styleClass="padded-vbox">
-            <Label text="Gestion des utilisateurs"
-                   styleClass="header-label"
-                   BorderPane.alignment="CENTER"/>
+        <VBox spacing="8" styleClass="padded-vbox">
+            <Label text="Gestion des Utilisateurs" styleClass="header-label"/>
         </VBox>
     </top>
 
+    <!-- Main Content -->
     <center>
-        <TableView fx:id="userTable" prefHeight="420" prefWidth="700" styleClass="table-view">
-            <columns>
-                <TableColumn fx:id="idCol" text="ID" prefWidth="50"/>
-                <TableColumn fx:id="nomCol" text="Nom" prefWidth="180"/>
-                <TableColumn fx:id="emailCol" text="Email" prefWidth="250"/>
-                <TableColumn fx:id="roleCol" text="Rôle" prefWidth="150"/>
-            </columns>
-        </TableView>
+        <VBox spacing="15" styleClass="padded-vbox">
+
+            <!-- Add Button -->
+            <HBox alignment="CENTER_LEFT">
+                <Button text="Ajouter un Utilisateur"
+                        onAction="#handleAdd"
+                        styleClass="primary-button"
+                        prefWidth="200"/>
+            </HBox>
+
+            <!-- Table -->
+            <TableView fx:id="userTable" prefHeight="350" styleClass="table-view">
+                <columns>
+                    <TableColumn fx:id="idCol" text="ID" prefWidth="60"/>
+                    <TableColumn fx:id="nomCol" text="Nom" prefWidth="180"/>
+                    <TableColumn fx:id="emailCol" text="Email" prefWidth="250"/>
+                    <TableColumn fx:id="roleCol" text="Rôle" prefWidth="150"/>
+                </columns>
+            </TableView>
+
+        </VBox>
     </center>
 
+    <!-- Action Buttons -->
     <bottom>
-        <HBox spacing="12" alignment="CENTER" styleClass="bottom-buttons">
-            <Button text="Ajouter" onAction="#handleAdd" styleClass="primary-button"/>
-            <Button text="Modifier" onAction="#handleEdit" styleClass="secondary-button"/>
-            <Button text="Supprimer" onAction="#handleDelete" styleClass="danger-button"/>
-            <Button text="Réinitialiser mot de passe" onAction="#handleResetPassword" styleClass="secondary-button"/>
-            <Button text="Fermer" onAction="#handleClose" styleClass="secondary-button"/>
+        <HBox spacing="12" alignment="CENTER" styleClass="padded-vbox">
+            <Button text="Modifier"
+                    onAction="#handleEdit"
+                    styleClass="secondary-button"/>
+            <Button text="Supprimer"
+                    onAction="#handleDelete"
+                    styleClass="danger-button"/>
+            <Button text="Réinitialiser mot de passe"
+                    onAction="#handleResetPassword"
+                    styleClass="secondary-button"/>
+            <Button text="Fermer"
+                    onAction="#handleClose"
+                    styleClass="secondary-button"/>
         </HBox>
     </bottom>
 
