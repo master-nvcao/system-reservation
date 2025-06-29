@@ -101,9 +101,9 @@ public class MyReservationsController implements Initializable {
         periodFilter.setItems(periodOptions);
         periodFilter.setValue("Toutes les périodes");
 
-        // Status filter
+        // Status filter - Updated with approval statuses
         ObservableList<String> statusOptions = FXCollections.observableArrayList(
-                "Tous les statuts", "À venir", "En cours", "Terminée"
+                "Tous les statuts", "En attente", "Approuvées", "Rejetées", "À venir", "En cours", "Terminée"
         );
         statusFilter.setItems(statusOptions);
         statusFilter.setValue("Tous les statuts");
@@ -135,10 +135,16 @@ public class MyReservationsController implements Initializable {
             TableRow<ReservationDisplay> row = new TableRow<>();
             row.itemProperty().addListener((obs, oldItem, newItem) -> {
                 if (newItem == null) {
-                    row.getStyleClass().removeAll("row-upcoming", "row-active", "row-completed");
+                    row.getStyleClass().removeAll("row-pending", "row-approved", "row-rejected", "row-upcoming", "row-active", "row-completed");
                 } else {
-                    row.getStyleClass().removeAll("row-upcoming", "row-active", "row-completed");
+                    row.getStyleClass().removeAll("row-pending", "row-approved", "row-rejected", "row-upcoming", "row-active", "row-completed");
                     switch (newItem.getStatus()) {
+                        case "En attente":
+                            row.getStyleClass().add("row-pending");
+                            break;
+                        case "Rejetée":
+                            row.getStyleClass().add("row-rejected");
+                            break;
                         case "À venir":
                             row.getStyleClass().add("row-upcoming");
                             break;
@@ -154,7 +160,7 @@ public class MyReservationsController implements Initializable {
             return row;
         });
 
-        // Custom cell factories for status column
+        // Enhanced status column with colors and icons
         statusCol.setCellFactory(column -> new TableCell<ReservationDisplay, String>() {
             @Override
             protected void updateItem(String status, boolean empty) {
@@ -163,17 +169,30 @@ public class MyReservationsController implements Initializable {
                     setText(null);
                     setStyle("");
                 } else {
-                    setText(status);
                     switch (status) {
-                        case "À venir":
+                        case "En attente":
+                            setText("⏳ En attente");
                             setStyle("-fx-text-fill: #f59e0b; -fx-font-weight: bold;");
                             break;
+                        case "Rejetée":
+                            setText("❌ Rejetée");
+                            setStyle("-fx-text-fill: #ef4444; -fx-font-weight: bold;");
+                            break;
+                        case "À venir":
+                            setText("📅 À venir");
+                            setStyle("-fx-text-fill: #3b82f6; -fx-font-weight: bold;");
+                            break;
                         case "En cours":
+                            setText("🟢 En cours");
                             setStyle("-fx-text-fill: #10b981; -fx-font-weight: bold;");
                             break;
                         case "Terminée":
+                            setText("✅ Terminée");
                             setStyle("-fx-text-fill: #6b7280; -fx-font-weight: normal;");
                             break;
+                        default:
+                            setText(status);
+                            setStyle("");
                     }
                 }
             }
@@ -184,12 +203,15 @@ public class MyReservationsController implements Initializable {
         actionsCol.setCellFactory(param -> new TableCell<ReservationDisplay, Void>() {
             private final Button editBtn = new Button("✏️");
             private final Button cancelBtn = new Button("❌");
+            private final Button viewBtn = new Button("👁️");
 
             {
                 editBtn.getStyleClass().add("table-action-button");
                 cancelBtn.getStyleClass().add("table-action-button");
+                viewBtn.getStyleClass().add("table-action-button");
                 editBtn.setTooltip(new Tooltip("Modifier"));
                 cancelBtn.setTooltip(new Tooltip("Annuler"));
+                viewBtn.setTooltip(new Tooltip("Voir détails"));
 
                 editBtn.setOnAction(e -> {
                     ReservationDisplay item = getTableView().getItems().get(getIndex());
@@ -199,6 +221,11 @@ public class MyReservationsController implements Initializable {
                 cancelBtn.setOnAction(e -> {
                     ReservationDisplay item = getTableView().getItems().get(getIndex());
                     handleAnnulerReservation(item);
+                });
+
+                viewBtn.setOnAction(e -> {
+                    ReservationDisplay item = getTableView().getItems().get(getIndex());
+                    handleViewDetails(item);
                 });
             }
 
@@ -211,16 +238,96 @@ public class MyReservationsController implements Initializable {
                     ReservationDisplay reservation = getTableView().getItems().get(getIndex());
                     HBox buttons = new HBox(5);
 
-                    // Only show edit/cancel for future reservations
-                    if ("À venir".equals(reservation.getStatus()) || "En cours".equals(reservation.getStatus())) {
-                        buttons.getChildren().addAll(editBtn, cancelBtn);
-                    } else {
-                        buttons.getChildren().add(editBtn); // Only edit for completed
+                    switch (reservation.getStatus()) {
+                        case "En attente":
+                            // Pending: only view details and cancel
+                            buttons.getChildren().addAll(viewBtn, cancelBtn);
+                            break;
+                        case "Rejetée":
+                            // Rejected: only view details
+                            buttons.getChildren().add(viewBtn);
+                            break;
+                        case "À venir":
+                            // Approved and future: edit and cancel
+                            buttons.getChildren().addAll(editBtn, cancelBtn);
+                            break;
+                        case "En cours":
+                            // Active: only cancel
+                            buttons.getChildren().addAll(viewBtn, cancelBtn);
+                            break;
+                        case "Terminée":
+                            // Completed: only view
+                            buttons.getChildren().add(viewBtn);
+                            break;
                     }
                     setGraphic(buttons);
                 }
             }
         });
+    }
+
+    private void handleViewDetails(ReservationDisplay reservationDisplay) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Reservation reservation = session.get(Reservation.class, reservationDisplay.getId());
+            if (reservation == null) {
+                showErrorDialog("Erreur", "Réservation introuvable.");
+                return;
+            }
+
+            // Create details dialog
+            Dialog<Void> dialog = new Dialog<>();
+            dialog.setTitle("Détails de la réservation");
+            dialog.setHeaderText("Réservation #" + reservation.getId());
+
+            VBox content = new VBox(10);
+            content.getChildren().addAll(
+                    new Label("Statut: " + getStatusText(reservation.getStatut())),
+                    new Label("Salle: " + reservation.getSalle().getNom()),
+                    new Label("Date début: " + reservation.getDateDebut().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))),
+                    new Label("Date fin: " + reservation.getDateFin().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))),
+                    new Label("Description: " + (reservation.getDescription() != null ? reservation.getDescription() : "Aucune")),
+                    new Label("Date de demande: " + (reservation.getDateCreation() != null ?
+                            reservation.getDateCreation().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) : "N/A"))
+            );
+
+            // Add admin validation info if available
+            if (reservation.getDateValidation() != null) {
+                content.getChildren().addAll(
+                        new Label("Date de validation: " + reservation.getDateValidation().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))),
+                        new Label("Validé par: " + (reservation.getValidateurAdmin() != null ?
+                                reservation.getValidateurAdmin().getNom() : "Système"))
+                );
+            }
+
+            // Add admin comment if available
+            if (reservation.getCommentaireAdmin() != null && !reservation.getCommentaireAdmin().trim().isEmpty()) {
+                content.getChildren().addAll(
+                        new Label("Commentaire admin:"),
+                        new TextArea(reservation.getCommentaireAdmin()) {{
+                            setEditable(false);
+                            setPrefRowCount(2);
+                            setWrapText(true);
+                        }}
+                );
+            }
+
+            dialog.getDialogPane().setContent(content);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            dialog.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErrorDialog("Erreur", "Erreur lors de l'affichage des détails.");
+        }
+    }
+
+    private String getStatusText(Reservation.StatutReservation statut) {
+        switch (statut) {
+            case EN_ATTENTE: return "⏳ En attente d'approbation";
+            case APPROUVEE: return "✅ Approuvée";
+            case REJETEE: return "❌ Rejetée";
+            case ANNULEE: return "🚫 Annulée";
+            default: return statut.toString();
+        }
     }
 
     private void setupTableSelection() {
@@ -237,7 +344,14 @@ public class MyReservationsController implements Initializable {
         Task<List<Reservation>> loadTask = new Task<List<Reservation>>() {
             @Override
             protected List<Reservation> call() throws Exception {
-                return reservationService.getReservationsByUser(utilisateur);
+                try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+                    return session.createQuery(
+                                    "FROM Reservation r LEFT JOIN FETCH r.salle LEFT JOIN FETCH r.validateurAdmin " +
+                                            "WHERE r.utilisateur = :user ORDER BY r.dateCreation DESC",
+                                    Reservation.class)
+                            .setParameter("user", utilisateur)
+                            .list();
+                }
             }
 
             @Override
@@ -274,17 +388,31 @@ public class MyReservationsController implements Initializable {
                 LocalDateTime now = LocalDateTime.now();
 
                 int total = allReservations.size();
-                int upcoming = (int) allReservations.stream()
-                        .filter(r -> r.getDateDebutDateTime().isAfter(now))
-                        .count();
-                int active = (int) allReservations.stream()
-                        .filter(r -> r.getDateDebutDateTime().isBefore(now) && r.getDateFinDateTime().isAfter(now))
-                        .count();
-                int completed = (int) allReservations.stream()
-                        .filter(r -> r.getDateFinDateTime().isBefore(now))
+
+                // Count by approval status
+                int pending = (int) allReservations.stream()
+                        .filter(r -> "En attente".equals(r.getStatus()))
                         .count();
 
+                int approved = (int) allReservations.stream()
+                        .filter(r -> "À venir".equals(r.getStatus()) || "En cours".equals(r.getStatus()) || "Terminée".equals(r.getStatus()))
+                        .count();
+
+                int upcoming = (int) allReservations.stream()
+                        .filter(r -> "À venir".equals(r.getStatus()))
+                        .count();
+
+                int active = (int) allReservations.stream()
+                        .filter(r -> "En cours".equals(r.getStatus()))
+                        .count();
+
+                int completed = (int) allReservations.stream()
+                        .filter(r -> "Terminée".equals(r.getStatus()))
+                        .count();
+
+                // Calculate total hours for approved reservations only
                 long totalMinutes = allReservations.stream()
+                        .filter(r -> !"En attente".equals(r.getStatus()) && !"Rejetée".equals(r.getStatus()))
                         .mapToLong(r -> ChronoUnit.MINUTES.between(r.getDateDebutDateTime(), r.getDateFinDateTime()))
                         .sum();
 
@@ -358,9 +486,15 @@ public class MyReservationsController implements Initializable {
             }
 
             // Status filter
-            if (selectedStatus != null && !selectedStatus.equals("Tous les statuts") &&
-                    !r.getStatus().equals(selectedStatus)) {
-                matches = false;
+            if (selectedStatus != null && !selectedStatus.equals("Tous les statuts")) {
+                if (selectedStatus.equals("Approuvées")) {
+                    // Show all approved reservations (À venir, En cours, Terminée)
+                    if (!("À venir".equals(r.getStatus()) || "En cours".equals(r.getStatus()) || "Terminée".equals(r.getStatus()))) {
+                        matches = false;
+                    }
+                } else if (!r.getStatus().equals(selectedStatus)) {
+                    matches = false;
+                }
             }
 
             // Room filter
@@ -455,6 +589,13 @@ public class MyReservationsController implements Initializable {
     }
 
     private void handleModifierReservation(ReservationDisplay reservationDisplay) {
+        // Only allow modification of approved future reservations
+        if (!"À venir".equals(reservationDisplay.getStatus())) {
+            showWarningDialog("Modification impossible",
+                    "Seules les réservations approuvées à venir peuvent être modifiées.");
+            return;
+        }
+
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Reservation reservation = session.get(Reservation.class, reservationDisplay.getId());
             if (reservation == null) {
@@ -510,14 +651,13 @@ public class MyReservationsController implements Initializable {
                 return;
             }
 
-            // Check for conflicts with other reservations
+            // Check for conflicts with other APPROVED reservations
             List<Reservation> conflicts = session.createQuery(
-                            "FROM Reservation WHERE salle = :salle AND id <> :id AND " +
-                                    "((:debut BETWEEN dateDebut AND dateFin) OR " +
-                                    "(:fin BETWEEN dateDebut AND dateFin) OR " +
-                                    "(:debut < dateDebut AND :fin > dateFin))", Reservation.class)
+                            "FROM Reservation WHERE salle = :salle AND id <> :id AND statut = :statut AND " +
+                                    "((:debut < dateFin AND :fin > dateDebut))", Reservation.class)
                     .setParameter("salle", reservation.getSalle())
                     .setParameter("id", reservation.getId())
+                    .setParameter("statut", Reservation.StatutReservation.APPROUVEE)
                     .setParameter("debut", dateDebut)
                     .setParameter("fin", dateFin)
                     .list();
@@ -556,8 +696,8 @@ public class MyReservationsController implements Initializable {
 
     private void handleAnnulerReservation(ReservationDisplay reservationDisplay) {
         // Check if reservation can be cancelled
-        if ("Terminée".equals(reservationDisplay.getStatus())) {
-            showWarningDialog("Action impossible", "Impossible d'annuler une réservation terminée.");
+        if ("Terminée".equals(reservationDisplay.getStatus()) || "Rejetée".equals(reservationDisplay.getStatus())) {
+            showWarningDialog("Action impossible", "Impossible d'annuler une réservation terminée ou rejetée.");
             return;
         }
 
@@ -567,7 +707,7 @@ public class MyReservationsController implements Initializable {
         confirmation.setContentText("Êtes-vous sûr de vouloir annuler cette réservation ?\n\n" +
                 "Salle: " + reservationDisplay.getSalleName() + "\n" +
                 "Date: " + reservationDisplay.getDateDebut() + "\n" +
-                "Durée: " + reservationDisplay.getDuration());
+                "Statut: " + reservationDisplay.getStatus());
 
         Optional<ButtonType> result = confirmation.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -575,7 +715,14 @@ public class MyReservationsController implements Initializable {
                 Transaction tx = session.beginTransaction();
                 Reservation reservation = session.get(Reservation.class, reservationDisplay.getId());
                 if (reservation != null) {
-                    session.remove(reservation);
+                    // For pending requests, delete the record
+                    // For approved reservations, mark as cancelled
+                    if (reservation.getStatut() == Reservation.StatutReservation.EN_ATTENTE) {
+                        session.remove(reservation);
+                    } else {
+                        reservation.setStatut(Reservation.StatutReservation.ANNULEE);
+                        session.update(reservation);
+                    }
                     tx.commit();
                     loadReservations();
                     loadStatistics();
@@ -642,13 +789,12 @@ public class MyReservationsController implements Initializable {
             long duration = ChronoUnit.MINUTES.between(original.getDateDebut(), original.getDateFin());
             LocalDateTime newEndTime = newStartTime.plusMinutes(duration);
 
-            // Check for conflicts
+            // Check for conflicts with approved reservations
             List<Reservation> conflicts = session.createQuery(
-                            "FROM Reservation WHERE salle = :salle AND " +
-                                    "((:debut BETWEEN dateDebut AND dateFin) OR " +
-                                    "(:fin BETWEEN dateDebut AND dateFin) OR " +
-                                    "(:debut < dateDebut AND :fin > dateFin))", Reservation.class)
+                            "FROM Reservation WHERE salle = :salle AND statut = :statut AND " +
+                                    "((:debut < dateFin AND :fin > dateDebut))", Reservation.class)
                     .setParameter("salle", original.getSalle())
+                    .setParameter("statut", Reservation.StatutReservation.APPROUVEE)
                     .setParameter("debut", newStartTime)
                     .setParameter("fin", newEndTime)
                     .list();
@@ -658,19 +804,22 @@ public class MyReservationsController implements Initializable {
                 return;
             }
 
+            // Create new request (status: EN_ATTENTE)
             Reservation duplicate = new Reservation();
             duplicate.setUtilisateur(original.getUtilisateur());
             duplicate.setSalle(original.getSalle());
             duplicate.setDateDebut(newStartTime);
             duplicate.setDateFin(newEndTime);
             duplicate.setDescription(original.getDescription() + " (Copie)");
+            duplicate.setStatut(Reservation.StatutReservation.EN_ATTENTE);
+            duplicate.setDateCreation(LocalDateTime.now());
 
             Transaction tx = session.beginTransaction();
             session.persist(duplicate);
             tx.commit();
 
             loadReservations();
-            showSuccessDialog("Succès", "Réservation dupliquée avec succès.");
+            showSuccessDialog("Succès", "Demande de réservation dupliquée avec succès. Elle sera examinée par un administrateur.");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -693,6 +842,7 @@ public class MyReservationsController implements Initializable {
 
         VBox content = new VBox(10);
         content.getChildren().addAll(
+                new Label("Statut: " + selected.getStatus()),
                 new Label("Salle: " + selected.getSalleName()),
                 new Label("Date début: " + selected.getDateDebut()),
                 new Label("Date fin: " + selected.getDateFin()),
@@ -764,7 +914,15 @@ public class MyReservationsController implements Initializable {
 
     private void updateTableInfo() {
         int total = reservationTable.getItems().size();
-        tableInfoLabel.setText("Affichage de " + total + " réservation" + (total > 1 ? "s" : ""));
+        long pending = reservationTable.getItems().stream()
+                .filter(r -> "En attente".equals(r.getStatus()))
+                .count();
+
+        String info = "Affichage de " + total + " réservation" + (total > 1 ? "s" : "");
+        if (pending > 0) {
+            info += " (" + pending + " en attente)";
+        }
+        tableInfoLabel.setText(info);
     }
 
     // Utility methods for dialogs
@@ -822,14 +980,30 @@ public class MyReservationsController implements Initializable {
             long minutes = ChronoUnit.MINUTES.between(reservation.getDateDebut(), reservation.getDateFin()) % 60;
             this.duration = hours + "h" + (minutes > 0 ? String.format("%02dm", minutes) : "");
 
-            // Determine status
-            LocalDateTime now = LocalDateTime.now();
-            if (reservation.getDateDebut().isAfter(now)) {
-                this.status = "À venir";
-            } else if (reservation.getDateFin().isBefore(now)) {
-                this.status = "Terminée";
-            } else {
-                this.status = "En cours";
+            // Determine status based on reservation status and time
+            switch (reservation.getStatut()) {
+                case EN_ATTENTE:
+                    this.status = "En attente";
+                    break;
+                case REJETEE:
+                    this.status = "Rejetée";
+                    break;
+                case ANNULEE:
+                    this.status = "Annulée";
+                    break;
+                case APPROUVEE:
+                    // For approved reservations, check current time status
+                    LocalDateTime now = LocalDateTime.now();
+                    if (reservation.getDateDebut().isAfter(now)) {
+                        this.status = "À venir";
+                    } else if (reservation.getDateFin().isBefore(now)) {
+                        this.status = "Terminée";
+                    } else {
+                        this.status = "En cours";
+                    }
+                    break;
+                default:
+                    this.status = "Inconnue";
             }
 
             this.description = reservation.getDescription() != null ? reservation.getDescription() : "";
@@ -839,8 +1013,9 @@ public class MyReservationsController implements Initializable {
             this.equipment = getEquipmentList(reservation.getSalle());
 
             // Calculate reminder time
+            LocalDateTime now = LocalDateTime.now();
             long minutesUntilStart = ChronoUnit.MINUTES.between(now, reservation.getDateDebut());
-            if (minutesUntilStart > 0 && minutesUntilStart <= 60) {
+            if (minutesUntilStart > 0 && minutesUntilStart <= 60 && reservation.getStatut() == Reservation.StatutReservation.APPROUVEE) {
                 this.reminder = minutesUntilStart + "min";
             } else {
                 this.reminder = "-";

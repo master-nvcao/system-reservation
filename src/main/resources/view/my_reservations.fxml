@@ -125,7 +125,7 @@
 
                 <TableView fx:id="reservationTable" VBox.vgrow="ALWAYS" styleClass="modern-table">
                     <columns>
-                        <TableColumn fx:id="statusCol" text="Statut" prefWidth="80"/>
+                        <TableColumn fx:id="statusCol" text="Statut" prefWidth="100"/>
                         <TableColumn fx:id="salleCol" text="Salle" prefWidth="130"/>
                         <TableColumn fx:id="dateDebutCol" text="Date Début" prefWidth="130"/>
                         <TableColumn fx:id="dateFinCol" text="Date Fin" prefWidth="130"/>

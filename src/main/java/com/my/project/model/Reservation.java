@@ -27,4 +27,23 @@ public class Reservation {
     private LocalDateTime dateFin;
 
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    private StatutReservation statut = StatutReservation.EN_ATTENTE;
+
+    private LocalDateTime dateCreation = LocalDateTime.now();
+
+    private LocalDateTime dateValidation;
+
+    @ManyToOne
+    private Utilisateur validateurAdmin;
+
+    private String commentaireAdmin;
+
+    public enum StatutReservation {
+        EN_ATTENTE,    // Waiting for admin approval
+        APPROUVEE,     // Approved by admin
+        REJETEE,       // Rejected by admin
+        ANNULEE        // Cancelled by user
+    }
 }

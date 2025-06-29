@@ -6,6 +6,7 @@ import com.my.project.model.Utilisateur;
 import com.my.project.util.HibernateUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -28,24 +29,58 @@ public class ReservationController {
 
     @FXML
     public void initialize() {
+        setupComboBox();
+        loadSalles();
+    }
+
+    private void setupComboBox() {
+        // Configure ComboBox to display salle names properly
+        salleComboBox.setCellFactory(listView -> new ListCell<Salle>() {
+            @Override
+            protected void updateItem(Salle salle, boolean empty) {
+                super.updateItem(salle, empty);
+                if (empty || salle == null) {
+                    setText(null);
+                } else {
+                    setText(salle.getNom() + " (Capacité: " + salle.getCapacite() + ")");
+                }
+            }
+        });
+
+        salleComboBox.setButtonCell(new ListCell<Salle>() {
+            @Override
+            protected void updateItem(Salle salle, boolean empty) {
+                super.updateItem(salle, empty);
+                if (empty || salle == null) {
+                    setText("Sélectionner une salle");
+                } else {
+                    setText(salle.getNom());
+                }
+            }
+        });
+    }
+
+    private void loadSalles() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            List<Salle> salles = session.createQuery("FROM Salle WHERE disponible = true", Salle.class).list();
+            List<Salle> salles = session.createQuery("FROM Salle WHERE disponible = true ORDER BY nom", Salle.class).list();
+            salleComboBox.getItems().clear();
             salleComboBox.getItems().addAll(salles);
+        } catch (Exception e) {
+            showErrorMessage("Erreur lors du chargement des salles.");
         }
     }
 
     @FXML
     private void handleReservation() {
-        Salle salle = salleComboBox.getValue();
-        LocalDate date = datePicker.getValue();
-        String heureDebutStr = heureDebutField.getText();
-        String heureFinStr = heureFinField.getText();
-        String desc = descriptionArea.getText();
-
-        if (salle == null || date == null || heureDebutStr.isEmpty() || heureFinStr.isEmpty()) {
-            messageLabel.setText("Tous les champs sont obligatoires.");
+        if (!validateForm()) {
             return;
         }
+
+        Salle salle = salleComboBox.getValue();
+        LocalDate date = datePicker.getValue();
+        String heureDebutStr = heureDebutField.getText().trim();
+        String heureFinStr = heureFinField.getText().trim();
+        String description = descriptionArea.getText().trim();
 
         try {
             LocalTime debut = LocalTime.parse(heureDebutStr);
@@ -57,101 +92,200 @@ public class ReservationController {
                 return;
             }
 
+            // Check for conflicts with APPROVED reservations only
+            if (!verifierDisponibiliteSalle(salle, dateDebut, dateFin)) {
+                return;
+            }
+
+            // Create reservation request (status: EN_ATTENTE)
             try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-                // Vérification disponibilité de la salle
-                List<Reservation> conflitsSalle = session.createQuery(
-                                "FROM Reservation WHERE salle = :salle AND " +
-                                        "((:debut BETWEEN dateDebut AND dateFin) OR " +
-                                        "(:fin BETWEEN dateDebut AND dateFin) OR " +
-                                        "(:debut < dateDebut AND :fin > dateFin))", Reservation.class)
-                        .setParameter("salle", salle)
-                        .setParameter("debut", dateDebut)
-                        .setParameter("fin", dateFin)
-                        .list();
-
-                if (!conflitsSalle.isEmpty()) {
-                    messageLabel.setText("Créneau déjà réservé pour cette salle.");
-                    return;
-                }
-
-                System.err.println("Utilisateur connecter : " +utilisateurConnecte);
-                // OK : enregistrement
                 Transaction tx = session.beginTransaction();
-                Reservation res = new Reservation();
-                res.setSalle(salle);
-                res.setUtilisateur(utilisateurConnecte);
-                res.setDateDebut(dateDebut);
-                res.setDateFin(dateFin);
-                res.setDescription(desc);
 
-                session.persist(res);
+                Reservation reservation = new Reservation();
+                reservation.setSalle(salle);
+                reservation.setUtilisateur(utilisateurConnecte);
+                reservation.setDateDebut(dateDebut);
+                reservation.setDateFin(dateFin);
+                reservation.setDescription(description);
+                reservation.setStatut(Reservation.StatutReservation.EN_ATTENTE);
+                reservation.setDateCreation(LocalDateTime.now());
+
+                session.persist(reservation);
                 tx.commit();
 
-                messageLabel.setStyle("-fx-text-fill: green;");
-                messageLabel.setText("Réservation enregistrée !");
+                showSuccessMessage("Demande de réservation envoyée ! Elle sera examinée par un administrateur.");
+                clearForm();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                showErrorMessage("Erreur lors de l'envoi de la demande.");
             }
+
         } catch (Exception e) {
-            e.printStackTrace();
-            messageLabel.setText("Erreur lors de la réservation.");
+            showErrorMessage("Format d'heure invalide. Utilisez HH:MM (ex: 14:30)");
         }
     }
 
-    private boolean verifierReglesMetier(LocalDateTime debut, LocalDateTime fin) {
-        if (debut.isBefore(LocalDateTime.now())) {
-            messageLabel.setText("Impossible de réserver dans le passé.");
+    private boolean validateForm() {
+        if (utilisateurConnecte == null) {
+            showErrorMessage("Aucun utilisateur connecté.");
             return false;
         }
 
-        if (!fin.isAfter(debut)) {
-            messageLabel.setText("L'heure de fin doit être après l'heure de début.");
+        if (salleComboBox.getValue() == null) {
+            showErrorMessage("Veuillez sélectionner une salle.");
             return false;
         }
 
-        long duree = Duration.between(debut, fin).toHours();
-        if (duree > 4) {
-            messageLabel.setText("Durée maximale autorisée : 4 heures.");
+        if (datePicker.getValue() == null) {
+            showErrorMessage("Veuillez sélectionner une date.");
             return false;
         }
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            // 1. Max 3 réservations / jour
-            LocalDate jour = debut.toLocalDate();
-            LocalDateTime debutJour = jour.atStartOfDay();
-            LocalDateTime finJour = jour.plusDays(1).atStartOfDay();
+        if (heureDebutField.getText().trim().isEmpty()) {
+            showErrorMessage("Veuillez saisir l'heure de début.");
+            return false;
+        }
 
-            long nbResaJour = session.createQuery(
-                            "SELECT COUNT(*) FROM Reservation WHERE utilisateur = :u AND dateDebut BETWEEN :d1 AND :d2", Long.class)
-                    .setParameter("u", utilisateurConnecte)
-                    .setParameter("d1", debutJour)
-                    .setParameter("d2", finJour)
-                    .uniqueResult();
+        if (heureFinField.getText().trim().isEmpty()) {
+            showErrorMessage("Veuillez saisir l'heure de fin.");
+            return false;
+        }
 
-            if (nbResaJour >= 3) {
-                messageLabel.setText("Limite de 3 réservations par jour atteinte.");
-                return false;
-            }
-
-            // 2. Aucun chevauchement autorisé (même utilisateur)
-            List<Reservation> chevauchements = session.createQuery(
-                            "FROM Reservation WHERE utilisateur = :u AND " +
-                                    "((:start BETWEEN dateDebut AND dateFin) OR " +
-                                    "(:end BETWEEN dateDebut AND dateFin) OR " +
-                                    "(:start < dateDebut AND :end > dateFin))", Reservation.class)
-                    .setParameter("u", utilisateurConnecte)
-                    .setParameter("start", debut)
-                    .setParameter("end", fin)
-                    .list();
-
-            if (!chevauchements.isEmpty()) {
-                messageLabel.setText("Vous avez déjà une réservation à ce moment-là.");
-                return false;
-            }
+        if (descriptionArea.getText().trim().isEmpty()) {
+            showErrorMessage("Veuillez saisir une description.");
+            return false;
         }
 
         return true;
     }
 
+    private boolean verifierReglesMetier(LocalDateTime debut, LocalDateTime fin) {
+        // Check if reservation is not in the past
+        if (debut.isBefore(LocalDateTime.now())) {
+            showErrorMessage("Impossible de réserver dans le passé.");
+            return false;
+        }
+
+        // Check if end time is after start time
+        if (!fin.isAfter(debut)) {
+            showErrorMessage("L'heure de fin doit être après l'heure de début.");
+            return false;
+        }
+
+        // Check duration limit (4 hours max)
+        long dureeMinutes = Duration.between(debut, fin).toMinutes();
+        if (dureeMinutes > 240) { // 4 hours = 240 minutes
+            showErrorMessage("Durée maximale autorisée : 4 heures.");
+            return false;
+        }
+
+        // Check minimum duration (15 minutes)
+        if (dureeMinutes < 15) {
+            showErrorMessage("Durée minimale requise : 15 minutes.");
+            return false;
+        }
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // Check daily request limit (5 requests per day including pending)
+            LocalDate jour = debut.toLocalDate();
+            LocalDateTime debutJour = jour.atStartOfDay();
+            LocalDateTime finJour = jour.plusDays(1).atStartOfDay();
+
+            long nbDemandesJour = session.createQuery(
+                            "SELECT COUNT(*) FROM Reservation WHERE utilisateur = :u AND dateDebut >= :d1 AND dateDebut < :d2 AND statut != :statut", Long.class)
+                    .setParameter("u", utilisateurConnecte)
+                    .setParameter("d1", debutJour)
+                    .setParameter("d2", finJour)
+                    .setParameter("statut", Reservation.StatutReservation.REJETEE)
+                    .uniqueResult();
+
+            if (nbDemandesJour >= 5) {
+                showErrorMessage("Limite de 5 demandes par jour atteinte (en attente + approuvées).");
+                return false;
+            }
+
+            // Check for user conflicts with APPROVED reservations only
+            List<Reservation> conflitsUtilisateur = session.createQuery(
+                            "FROM Reservation WHERE utilisateur = :u AND statut = :statut AND " +
+                                    "((:debut < dateFin AND :fin > dateDebut))", Reservation.class)
+                    .setParameter("u", utilisateurConnecte)
+                    .setParameter("statut", Reservation.StatutReservation.APPROUVEE)
+                    .setParameter("debut", debut)
+                    .setParameter("fin", fin)
+                    .list();
+
+            if (!conflitsUtilisateur.isEmpty()) {
+                showErrorMessage("Vous avez déjà une réservation approuvée qui chevauche avec ce créneau.");
+                return false;
+            }
+        } catch (Exception e) {
+            showErrorMessage("Erreur lors de la vérification des règles métier.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean verifierDisponibiliteSalle(Salle salle, LocalDateTime debut, LocalDateTime fin) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // Check conflicts with APPROVED reservations only
+            List<Reservation> conflitsSalle = session.createQuery(
+                            "FROM Reservation WHERE salle = :salle AND statut = :statut AND " +
+                                    "((:debut < dateFin AND :fin > dateDebut))", Reservation.class)
+                    .setParameter("salle", salle)
+                    .setParameter("statut", Reservation.StatutReservation.APPROUVEE)
+                    .setParameter("debut", debut)
+                    .setParameter("fin", fin)
+                    .list();
+
+            if (!conflitsSalle.isEmpty()) {
+                showErrorMessage("Cette salle est déjà réservée (approuvée) pour ce créneau.");
+                return false;
+            }
+
+            return true;
+        } catch (Exception e) {
+            showErrorMessage("Erreur lors de la vérification de disponibilité.");
+            return false;
+        }
+    }
+
+    @FXML
+    private void handleCancel() {
+        clearForm();
+        // Optionally close the window
+        Stage stage = (Stage) salleComboBox.getScene().getWindow();
+        if (stage != null) {
+            stage.close();
+        }
+    }
+
+    private void clearForm() {
+        salleComboBox.setValue(null);
+        datePicker.setValue(null);
+        heureDebutField.clear();
+        heureFinField.clear();
+        descriptionArea.clear();
+        messageLabel.setText("");
+    }
+
+    private void showErrorMessage(String message) {
+        messageLabel.setText(message);
+        messageLabel.setStyle("-fx-text-fill: #dc3545; -fx-font-weight: bold;");
+    }
+
+    private void showSuccessMessage(String message) {
+        messageLabel.setText(message);
+        messageLabel.setStyle("-fx-text-fill: #28a745; -fx-font-weight: bold;");
+    }
+
     public void setUtilisateur(Utilisateur utilisateur) {
         this.utilisateurConnecte = utilisateur;
+        System.out.println("Utilisateur connecté: " + (utilisateur != null ? utilisateur.getNom() : "null"));
+    }
+
+    public Utilisateur getUtilisateur() {
+        return utilisateurConnecte;
     }
 }
