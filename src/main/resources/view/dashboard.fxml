@@ -20,7 +20,7 @@
             <!-- Logo/Brand -->
             <HBox alignment="CENTER_LEFT" spacing="10" styleClass="brand-section">
                 <Label text="🎓" styleClass="brand-icon"/>
-                <Label text="Student Hub" styleClass="brand-text"/>
+                <Label text="Etudiant Hub" styleClass="brand-text"/>
             </HBox>
 
             <!-- User Info -->

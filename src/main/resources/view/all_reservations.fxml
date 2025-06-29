@@ -29,7 +29,7 @@
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <HBox spacing="10" alignment="CENTER">
-                    <Button text="➕ Nouvelle" styleClass="success-button"/>
+<!--                    <Button text="➕ Nouvelle" styleClass="success-button"/>-->
                     <Button text="🔄 Actualiser" onAction="#handleRefresh" styleClass="refresh-button"/>
                     <Button text="📊 Exporter" onAction="#handleExporter" styleClass="export-button"/>
                 </HBox>
